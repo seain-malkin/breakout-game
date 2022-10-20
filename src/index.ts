@@ -1,7 +1,3 @@
-let message: String = "Break ";
+import breakout from './modules/breakout';
 
-console.log(message);
-
-message = "Out";
-
-console.log(` ${message}`);
+breakout.launch('brkt_canvas');
