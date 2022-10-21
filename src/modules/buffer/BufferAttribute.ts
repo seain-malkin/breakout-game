@@ -1,3 +1,5 @@
+import { GL_FLOAT } from "webgl-constants";
+
 class BufferAttribute {
     normalized = false;
     stride = 0;
@@ -36,4 +38,18 @@ class BufferAttribute {
     }
 }
 
-export { BufferAttribute };
+class FloatBufferAttribute extends BufferAttribute {
+    constructor(
+        size: number,
+        normalized?: boolean,
+        stride?: number,
+        offset?: number,
+    ) {
+        super(size, GL_FLOAT, normalized, stride, offset);
+    }
+}
+
+export {
+    BufferAttribute,
+    FloatBufferAttribute,
+};

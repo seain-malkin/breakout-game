@@ -24,7 +24,7 @@ class Breakout {
 }
 
 class WorldObject {
-
+    // modelViewMatrix
 }
 
 
@@ -69,7 +69,7 @@ class Renderer {
     }
 
     private getCanvasElement(elementId: string): HTMLCanvasElement {
-        const element = <HTMLCanvasElement>document.querySelector(`#${elementId}`);
+        const element = document.querySelector<HTMLCanvasElement>(`#${elementId}`);
         if (element == null) {
             throw new Error(`Can't find element ${elementId}`);
         }
@@ -81,7 +81,7 @@ class Renderer {
 const enum GLSHADER {
     'VERTEX' = 0x8B31,
     'FRAGMENT' = 0x8B30,
-};
+}
 
 type RawShader = [ GLenum, string ];
 
