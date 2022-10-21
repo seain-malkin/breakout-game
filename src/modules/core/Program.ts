@@ -1,19 +1,6 @@
-export { ProgramBuilder, IProgram };
-
 import { mat4, vec3 } from 'gl-matrix';
 
-type ShaderResource = {
-    type: GLenum,
-    source: string,
-};
-
-type AttributeOptions = {
-    size: number,
-    type: number,
-    normalized?: boolean,
-    stride?: number,
-    offset?: number,
-};
+type ShaderResource = [ GLenum, string ];
 
 interface ProgramProperty<T extends number | WebGLUniformLocation> {
     name: string;
@@ -21,16 +8,16 @@ interface ProgramProperty<T extends number | WebGLUniformLocation> {
     location: T;
 }
 
-interface IProgram {
+interface Program {
     glid: WebGLProgram;
     attribs: ProgramProperty<number>[];
     uniforms: ProgramProperty<WebGLUniformLocation>[];
 
+    getAttribute(name: string): ProgramProperty<number>;
     updateProperty(name: string, value: mat4 | vec3): void;
-    enableProperty(vao: WebGLVertexArrayObject, name: string, options: AttributeOptions): void;
 }
 
-class Program implements IProgram {
+class ShaderProgram implements Program {
     attribs: ProgramProperty<number>[];
     uniforms: ProgramProperty<WebGLUniformLocation>[];
 
@@ -44,29 +31,20 @@ class Program implements IProgram {
         this.uniforms = uniforms || new Array<ProgramProperty<WebGLUniformLocation>>();
     }
 
+    getAttribute(name: string): ProgramProperty<number> {
+        for (const attrib of this.attribs) {
+            if (name === attrib.name) {
+                return attrib;
+            }
+        }
+
+        return null;
+    }
+
     updateProperty(name: string, value: mat4 | vec3) {
         for (const property of this.uniforms) {
             if (property.name === name) {
                 this.injectPropertyValue(property, value);
-                break;
-            }
-        }
-    }
-
-    enableProperty(vao: WebGLVertexArrayObject, name: string, options: AttributeOptions) {
-        for (const property of this.attribs) {
-            if (property.name === name) {
-                this.gl.bindVertexArray(vao);
-                this.gl.vertexAttribPointer(
-                    property.location, 
-                    options.size,
-                    options.type,
-                    options.normalized != null ? options.normalized : false,
-                    options.stride | 0,
-                    options.offset | 0,
-                );
-                this.gl.enableVertexAttribArray(property.location);
-                this.gl.bindVertexArray(null);
                 break;
             }
         }
@@ -97,14 +75,14 @@ class ProgramBuilder {
         return this;
     }
 
-    build(gl: WebGL2RenderingContext): Promise<IProgram> {
+    build(gl: WebGL2RenderingContext): Promise<Program> {
         return new Promise((resolve, reject) => {
             const glid = gl.createProgram();
 
             // Compile and attach each shader resource
-            for (const shader of this.shaders) {
-                const shaderId = gl.createShader(shader.type);
-                gl.shaderSource(shaderId, shader.source);
+            for (const [type, source] of this.shaders) {
+                const shaderId = gl.createShader(type);
+                gl.shaderSource(shaderId, source);
                 gl.compileShader(shaderId);
                 gl.attachShader(glid, shaderId);
             }
@@ -120,7 +98,7 @@ class ProgramBuilder {
             if (!gl.getProgramParameter(glid, gl.LINK_STATUS)) {
                 reject(gl.getProgramInfoLog(glid));
             } else {
-                resolve(new Program(gl, glid, getAttributes(glid), getUniforms(glid)));
+                resolve(new ShaderProgram(gl, glid, getAttributes(glid), getUniforms(glid)));
             }
 
             /**
@@ -171,3 +149,5 @@ class ProgramBuilder {
         });
     }
 }
+
+export { ProgramBuilder, Program, ShaderResource };

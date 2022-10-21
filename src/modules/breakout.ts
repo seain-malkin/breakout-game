@@ -3,7 +3,7 @@ import * as glm from 'gl-matrix'
 import materialVsSrc from './material.vs.glsl';
 import materialFsSrc from './material.fs.glsl';
 import { Brick } from './Brick';
-import { ProgramBuilder } from './ProgramBuilder';
+import { ProgramBuilder } from './core/Program';
 
 export default {
     launch: launch

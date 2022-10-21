@@ -1,4 +1,4 @@
-export { Program };
+
 
 import { mat4 } from 'gl-matrix';
 

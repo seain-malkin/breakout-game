@@ -1,7 +1,8 @@
 import materialVsSrc from './material.vs.glsl';
 import materialFsSrc from './material.fs.glsl';
-import { Geometry } from './buffer/GeometryBuffer';
-import * as GL_ from 'webgl-constants';
+import { Renderer } from './core/Renderer';
+import { GL_VERTEX_SHADER, GL_FRAGMENT_SHADER } from 'webgl-constants';
+import { PlaneGeometry } from './geometry/PlaneGeometry';
 
 /**
  * A simple Breakout clone based on the original rules described 
@@ -17,9 +18,17 @@ class Breakout {
 
     initResources() {
         this.renderer.createProgram('material', [
-            [ GLSHADER.VERTEX, materialVsSrc ],
-            [ GLSHADER.FRAGMENT, materialFsSrc ],
-        ]);
+            [ GL_VERTEX_SHADER, materialVsSrc ],
+            [ GL_FRAGMENT_SHADER, materialFsSrc ],
+        ]).then((program) => {
+            const attrib = program.getAttribute('aVertexPosition');
+            if (attrib == null) {
+                throw new Error('Attrib aVertexPosition not found.');
+            }
+
+            const plane = new PlaneGeometry(attrib.location);
+            // Create model and add to renderer
+        });
     }
 }
 
@@ -43,58 +52,4 @@ class Brick extends ModelMesh {
     constructor() {
         super();
     }
-}
-
-class Renderer {
-    private _context: WebGL2RenderingContext;
-    private canvasElement: HTMLCanvasElement;
-
-    private rawPrograms = new Array<RawProgram>();
-
-    constructor(canvasId: string) {
-        this.canvasElement = this.getCanvasElement(canvasId);
-        this._context = this.getCanvasContext(this.canvasElement);
-        
-    }
-
-    get context(): WebGL2RenderingContext {
-        return this._context;
-    }
-
-    createProgram(tag: string, shaders: RawShader[]) {
-        this.rawPrograms.push({ tag: tag, shaders: shaders });
-    }
-
-    private getCanvasContext(element: HTMLCanvasElement): WebGL2RenderingContext {
-        const context = element.getContext("webgl2");
-        if (context == null) {
-            throw new Error(`WebGL2 not supported by browser`);
-        }
-
-        return context;
-    }
-
-    private getCanvasElement(elementId: string): HTMLCanvasElement {
-        const element = document.querySelector<HTMLCanvasElement>(`#${elementId}`);
-        if (element == null) {
-            throw new Error(`Can't find element ${elementId}`);
-        }
-
-        return element;
-    }
-}
-
-const enum GLSHADER {
-    'VERTEX' = 0x8B31,
-    'FRAGMENT' = 0x8B30,
-}
-
-type RawShader = [ GLenum, string ];
-
-interface RawProgram {
-    // Unique identifier to reference the program
-    tag: string;
-
-    // Array of shaders to compile and link with program
-    shaders: RawShader[];
 }

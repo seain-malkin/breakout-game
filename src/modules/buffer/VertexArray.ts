@@ -1,3 +1,0 @@
-class VertexArray {
-    buffers
-}
