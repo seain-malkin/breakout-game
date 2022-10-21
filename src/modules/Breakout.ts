@@ -39,6 +39,12 @@ class ModelMesh extends WorldObject {
     }
 }
 
+class Brick extends ModelMesh {
+    constructor() {
+        super();
+    }
+}
+
 class Renderer {
     private _context: WebGL2RenderingContext;
     private canvasElement: HTMLCanvasElement;

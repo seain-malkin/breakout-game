@@ -7,7 +7,6 @@ class BufferAttribute {
 
     constructor(
         public size: number,
-        public type: number,
         normalized?: boolean,
         stride?: number,
         offset?: number,
@@ -25,31 +24,17 @@ class BufferAttribute {
         }
     }
     
-    enable(gl: WebGL2RenderingContext, location: number) {
+    enable(gl: WebGL2RenderingContext, location: number, type: number) {
         gl.vertexAttribPointer(
             location, 
             this.size, 
-            this.type, 
-            this.normalized, 
-            this.stride, 
-            this.offset
+            type,
+            this.normalized,
+            this.stride,
+            this.offset,
         );
         gl.enableVertexAttribArray(location);
     }
 }
 
-class FloatBufferAttribute extends BufferAttribute {
-    constructor(
-        size: number,
-        normalized?: boolean,
-        stride?: number,
-        offset?: number,
-    ) {
-        super(size, GL_FLOAT, normalized, stride, offset);
-    }
-}
-
-export {
-    BufferAttribute,
-    FloatBufferAttribute,
-};
+export { BufferAttribute };

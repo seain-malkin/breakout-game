@@ -1,13 +1,25 @@
 import { BufferObject } from "./BufferObject";
-import { GL_ELEMENT_ARRAY_BUFFER } from "webgl-constants";
+import { GL_ELEMENT_ARRAY_BUFFER, GL_UNSIGNED_INT, GL_TRIANGLES, } from "webgl-constants";
 
-class IndexBuffer extends BufferObject {
+abstract class IndexBuffer extends BufferObject {
+    abstract type: number;
+
+    mode: GLenum = GL_TRIANGLES;
+    
     constructor(
         data: ArrayBuffer,
-        _usage?: GLenum
+        usage?: GLenum
     ) {
-        super(GL_ELEMENT_ARRAY_BUFFER, data, _usage);
+        super(GL_ELEMENT_ARRAY_BUFFER, data, usage);
     }
 }
 
-export { IndexBuffer };
+class Unit16IndexBuffer extends IndexBuffer {
+    type = GL_UNSIGNED_INT;
+
+    constructor(data: number[], usage?: GLenum) {
+        super(new Uint16Array(data), usage);
+    }
+}
+
+export { Unit16IndexBuffer };

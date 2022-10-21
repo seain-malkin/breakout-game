@@ -4,7 +4,8 @@ import {
     GL_STATIC_READ,
 } from 'webgl-constants';
 
-class BufferObject {
+abstract class BufferObject {
+    abstract type: number;
     private buffer: WebGLBuffer;
 
     constructor(

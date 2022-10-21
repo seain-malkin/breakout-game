@@ -1,12 +1,8 @@
-import * as _GL from 'webgl-constants';
-
 class Geometry {
-    usage: GLenum = _GL.GL_STATIC_DRAW;
+    
 
-    constructor(private buffer: ArrayBuffer, public type: number, usage?: GLenum) {
-        if (usage != null) {
-            this.usage = usage;
-        }
+    constructor() {
+        
     }
 
     
