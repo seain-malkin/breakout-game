@@ -11,12 +11,15 @@ abstract class BufferObject {
     constructor(
         public target: GLenum, 
         public data: ArrayBuffer,
+        public _count: number,
         public _usage?: GLenum
     ) {
         if (_usage != null) {
             this.usage = _usage;
         }
     }
+
+    abstract get count(): number;
 
     set usage(value: GLenum) {
         switch (value) {

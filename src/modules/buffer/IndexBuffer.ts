@@ -8,9 +8,14 @@ abstract class IndexBuffer extends BufferObject {
     
     constructor(
         data: ArrayBuffer,
+        count: number,
         usage?: GLenum
     ) {
-        super(GL_ELEMENT_ARRAY_BUFFER, data, usage);
+        super(GL_ELEMENT_ARRAY_BUFFER, data, count, usage);
+    }
+
+    get count(): number {
+        return this._count;
     }
 }
 
@@ -18,8 +23,8 @@ class Unit16IndexBuffer extends IndexBuffer {
     type = GL_UNSIGNED_INT;
 
     constructor(data: number[], usage?: GLenum) {
-        super(new Uint16Array(data), usage);
+        super(new Uint16Array(data), data.length ,usage);
     }
 }
 
-export { Unit16IndexBuffer };
+export { IndexBuffer, Unit16IndexBuffer };

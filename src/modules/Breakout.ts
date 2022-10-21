@@ -1,6 +1,6 @@
 import materialVsSrc from './material.vs.glsl';
 import materialFsSrc from './material.fs.glsl';
-import { Geometry } from './Geometry';
+import { Geometry } from './buffer/GeometryBuffer';
 import * as GL_ from 'webgl-constants';
 
 /**

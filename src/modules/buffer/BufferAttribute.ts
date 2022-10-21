@@ -1,5 +1,3 @@
-import { GL_FLOAT } from "webgl-constants";
-
 class BufferAttribute {
     normalized = false;
     stride = 0;

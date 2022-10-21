@@ -7,11 +7,14 @@ abstract class VertexBuffer extends BufferObject {
 
     private attributes = new Array<[number, BufferAttribute]>();
 
+    components: number = 0;
+
     constructor(
         data: ArrayBuffer,
+        count: number,
         usage?: GLenum,
     ) {
-        super(GL_ARRAY_BUFFER, data, usage);
+        super(GL_ARRAY_BUFFER, data, count, usage);
     }
 
     attachAttribute(location: number, attribute: BufferAttribute) {
@@ -22,8 +25,17 @@ abstract class VertexBuffer extends BufferObject {
         super.compose(gl);
         for (const [index, attrib] of this.attributes) {
             attrib.enable(gl, index, this.type);
+            this.components += attrib.size;
         }
         gl.bindBuffer(this.target, null);
+    }
+
+    get count(): number {
+        if (this.components === 0) {
+            return this.count;
+        } else {
+            return this._count / this.components;
+        }
     }
 }
 
@@ -34,7 +46,7 @@ class Float32VertexBuffer extends VertexBuffer {
         data: number[],
         usage?: GLenum,
     ) {
-        super(new Float32Array(data), usage);
+        super(new Float32Array(data), data.length, usage);
     }
 }
 
