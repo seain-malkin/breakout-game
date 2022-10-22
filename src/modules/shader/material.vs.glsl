@@ -1,13 +1,13 @@
 #version 300 es
-attribute vec4 aVertexPosition;
+in mediump vec4 position;
 
-uniform mat4 uModelViewMatrix;
-uniform mat4 uProjectionMatrix;
-uniform vec3 uColor;
+uniform mat4 modelView;
+uniform mat4 projection;
+uniform vec3 color;
 
-out vec4 vFragColor;
+out mediump vec4 fragColor;
 
 void main() {
-    gl_Position = uProjectionMatrix * uModelViewMatrix * aVertexPosition;
-    vFragColor = vec4(uColor, 1.0);
+    gl_Position = projection * modelView * position;
+    fragColor = vec4(color, 1.0);
 }

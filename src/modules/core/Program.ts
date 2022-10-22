@@ -13,8 +13,9 @@ interface Program {
     attribs: ProgramProperty<number>[];
     uniforms: ProgramProperty<WebGLUniformLocation>[];
 
+    use(gl: WebGL2RenderingContext): void;
     getAttribute(name: string): ProgramProperty<number>;
-    updateProperty(name: string, value: mat4 | vec3): void;
+    updateProperty(gl: WebGL2RenderingContext, name: string, value: mat4 | vec3): void;
 }
 
 class ShaderProgram implements Program {
@@ -31,6 +32,10 @@ class ShaderProgram implements Program {
         this.uniforms = uniforms || new Array<ProgramProperty<WebGLUniformLocation>>();
     }
 
+    use(gl: WebGL2RenderingContext): void {
+        gl.useProgram(this.glid);
+    }
+
     getAttribute(name: string): ProgramProperty<number> {
         for (const attrib of this.attribs) {
             if (name === attrib.name) {
@@ -41,25 +46,30 @@ class ShaderProgram implements Program {
         return null;
     }
 
-    updateProperty(name: string, value: mat4 | vec3) {
+    updateProperty(
+        gl: WebGL2RenderingContext,
+        name: string, 
+        value: mat4 | vec3
+    ) {
         for (const property of this.uniforms) {
             if (property.name === name) {
-                this.injectPropertyValue(property, value);
+                this.injectPropertyValue(gl, property, value);
                 break;
             }
         }
     }
 
     private injectPropertyValue(
+        gl: WebGL2RenderingContext,
         property: ProgramProperty<WebGLUniformLocation>, 
         value: mat4 | vec3,
     ) {
         switch (property.type) {
-            case this.gl.FLOAT_MAT4:
-                this.gl.uniformMatrix4fv(property.location, false, value);
+            case gl.FLOAT_MAT4:
+                gl.uniformMatrix4fv(property.location, false, value);
                 break;
-            case this.gl.FLOAT_VEC3:
-                this.gl.uniform3fv(property.location, value);
+            case gl.FLOAT_VEC3:
+                gl.uniform3fv(property.location, value);
                 break;
             default:
                 throw new Error(`Property '${property.name}' with type '${property.type}' is not supported.`);

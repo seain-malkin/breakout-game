@@ -3,7 +3,7 @@ import { GeometryBuffer } from "../buffer/GeometryBuffer";
 import { Unit16IndexBuffer } from "../buffer/IndexBuffer";
 import { Float32VertexBuffer } from "../buffer/VertexBuffer";
 
-class PlaneGeometry extends GeometryBuffer {
+class Plane extends GeometryBuffer {
     constructor(attribLoc: number) {
         super();
         const vertexBuffer = new Float32VertexBuffer(vertices);
@@ -29,4 +29,4 @@ const indices = [
     0, 2, 3,
 ];
 
-export { PlaneGeometry };
+export { Plane };

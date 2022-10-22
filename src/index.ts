@@ -1,3 +1,5 @@
-import breakout from './modules/breakout';
+import { Breakout } from "./modules/Breakout";
 
-breakout.launch('brkt_canvas');
+const breakout = new Breakout("brkt_canvas");
+
+breakout.initResources();
