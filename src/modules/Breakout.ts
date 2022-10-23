@@ -20,17 +20,20 @@ class Breakout {
     }
 
     initResources() {
-        this.renderer.createProgram('material', [
+        const renderer = this.renderer;
+        renderer.createProgram('material', [
             [ GL_VERTEX_SHADER, materialVsSrc ],
             [ GL_FRAGMENT_SHADER, materialFsSrc ],
-        ]).then((program) => {
+        ]).then((result) => {
+            const [tag, program] = result;
             const attrib = program.getAttribute('position');
             if (attrib == null) {
                 throw new Error(`Attrib 'position' not found.`);
             }
 
             const model = new Model(new Plane(attrib.location), new Material());
-            // Add to renderer
+            renderer.addModel(tag, model);
+            
         });
     }
 }

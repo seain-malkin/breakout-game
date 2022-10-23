@@ -2,6 +2,8 @@ import { mat4, vec3 } from 'gl-matrix';
 
 type ShaderResource = [ GLenum, string ];
 
+type ProgramKey = number;
+
 interface ProgramProperty<T extends number | WebGLUniformLocation> {
     name: string;
     type: GLenum;
@@ -10,7 +12,7 @@ interface ProgramProperty<T extends number | WebGLUniformLocation> {
 
 class Program {
     private static instances = 0;
-    readonly id = ++Program.instances;
+    readonly id: ProgramKey = ++Program.instances;
     readonly attribs: ProgramProperty<number>[];
     readonly uniforms: ProgramProperty<WebGLUniformLocation>[];
 
@@ -152,4 +154,4 @@ class ProgramBuilder {
     }
 }
 
-export { ProgramBuilder, Program, ShaderResource };
+export { ProgramBuilder, Program, ProgramKey, ShaderResource };
