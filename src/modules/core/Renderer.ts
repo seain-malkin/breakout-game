@@ -5,8 +5,8 @@ class Renderer {
     private _context: WebGL2RenderingContext;
     private canvasElement: HTMLCanvasElement;
 
-    private programs: Record<string, Program>;
-    private models: Record<ProgramKey, Model[]>;
+    private programs: Record<string, Program> = {};
+    private models: Record<ProgramKey, Model[]> = {};
 
     constructor(canvasId: string) {
         this.canvasElement = this.getCanvasElement(canvasId);
