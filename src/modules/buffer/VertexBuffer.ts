@@ -1,8 +1,11 @@
 import { BufferObject } from "./BufferObject";
 import { BufferAttribute } from "./BufferAttribute";
 import { GL_ARRAY_BUFFER, GL_FLOAT, } from "webgl-constants";
+import { BufferComposable } from './buffer';
 
-abstract class VertexBuffer extends BufferObject {
+abstract class VertexBuffer 
+extends BufferObject 
+implements BufferComposable {
     abstract type: number;
 
     private attributes = new Array<[number, BufferAttribute]>();

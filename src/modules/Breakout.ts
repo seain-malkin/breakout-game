@@ -30,10 +30,11 @@ class Breakout {
             if (attrib == null) {
                 throw new Error(`Attrib 'position' not found.`);
             }
-
-            const model = new Model(new Plane(attrib.location), new Material());
+            const plane = new Plane(attrib.location);
+            const model = new Model(plane, new Material());
+            const model2 = new Model(plane, new Material());
             renderer.addModel(tag, model);
-            
+            renderer.addModel(tag, model2);
         });
     }
 }

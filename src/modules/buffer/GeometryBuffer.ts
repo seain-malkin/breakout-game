@@ -1,8 +1,10 @@
 import { GL_TRIANGLES } from "webgl-constants";
 import { IndexBuffer } from "./IndexBuffer";
 import { VertexBuffer } from "./VertexBuffer";
+import { BufferComposable, BufferDrawable } from "./buffer";
 
-class GeometryBuffer {
+class GeometryBuffer 
+implements BufferComposable, BufferDrawable {
     vao: WebGLVertexArrayObject;
     drawMode: GLenum = GL_TRIANGLES;
     vertexBuffers = new Array<VertexBuffer>();

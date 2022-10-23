@@ -3,8 +3,9 @@ import {
     GL_STATIC_COPY, 
     GL_STATIC_READ,
 } from 'webgl-constants';
+import { BufferComposable } from './buffer';
 
-abstract class BufferObject {
+abstract class BufferObject implements BufferComposable {
     abstract type: number;
     private buffer: WebGLBuffer;
 

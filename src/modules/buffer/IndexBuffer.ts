@@ -1,7 +1,10 @@
 import { BufferObject } from "./BufferObject";
 import { GL_ELEMENT_ARRAY_BUFFER, GL_UNSIGNED_INT, GL_TRIANGLES, } from "webgl-constants";
+import { BufferComposable } from './buffer';
 
-abstract class IndexBuffer extends BufferObject {
+abstract class IndexBuffer 
+extends BufferObject 
+implements BufferComposable {
     abstract type: number;
 
     mode: GLenum = GL_TRIANGLES;

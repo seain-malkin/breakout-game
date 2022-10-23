@@ -5,8 +5,11 @@ class Renderer {
     private _context: WebGL2RenderingContext;
     private canvasElement: HTMLCanvasElement;
 
-    private programs: Record<string, Program> = {};
-    private models: Record<ProgramKey, Model[]> = {};
+    //private programs: Record<string, Program> = {};
+    //private models: Record<ProgramKey, Model[]> = {};
+
+    private programs = new Array<[string, Program]>();
+    private models = new Array<[ProgramKey, Model[]]>();
 
     constructor(canvasId: string) {
         this.canvasElement = this.getCanvasElement(canvasId);
@@ -30,11 +33,10 @@ class Renderer {
             throw new Error(`Could not find a program with the tag '${tag}'.`);
         }
 
-        if (!this.models[program.id]) {
-            this.models[program.id] = new Array<Model>();
-        }
+        // Search the models records for a program with the same id.
+        const [ , models ] = this.models.find(([ key, ]) => key === program.id);
 
-        this.models[program.id].push(model);
+        models.push(model);
     }
 
     createProgram(tag: string, shaders: ShaderResource[]): Promise<[string, Program]> {
@@ -45,7 +47,8 @@ class Renderer {
 
         return builder.build(this.context)
             .then((program) => {
-                this.programs[tag] = program;
+                this.programs.push([tag, program]);
+                this.models.push([program.id, new Array<Model>()]);
                 return Promise.resolve([tag, program]);
             });
     }
@@ -53,14 +56,19 @@ class Renderer {
     /**
      * Searches for the program registered with the given tag. If the
      * program doesn't exist, null is returned.
-     * @param tag Identifies the program used to draw the model
+     * @param name Identifies the program used to draw the model
      */
-    getProgram(tag: string): Program | null {
-        if (!this.programs[tag]) {
+    getProgram(name: string): Program | null {
+        const [ _, program ] = this.programs.find(([tag, program]) => tag === name);
+        if (!program) {
             return null;
         }
 
-        return this.programs[tag];
+        return program;
+    }
+
+    composeBuffers() {
+        
     }
 
     private getCanvasContext(element: HTMLCanvasElement): WebGL2RenderingContext {
