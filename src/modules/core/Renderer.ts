@@ -5,6 +5,7 @@ class Renderer {
     private canvasElement: HTMLCanvasElement;
 
     private programs = new Array<[string, Program]>();
+    
 
     constructor(canvasId: string) {
         this.canvasElement = this.getCanvasElement(canvasId);

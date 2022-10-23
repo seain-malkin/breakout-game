@@ -8,19 +8,11 @@ interface ProgramProperty<T extends number | WebGLUniformLocation> {
     location: T;
 }
 
-interface Program {
-    glid: WebGLProgram;
-    attribs: ProgramProperty<number>[];
-    uniforms: ProgramProperty<WebGLUniformLocation>[];
-
-    use(gl: WebGL2RenderingContext): void;
-    getAttribute(name: string): ProgramProperty<number>;
-    updateProperty(gl: WebGL2RenderingContext, name: string, value: mat4 | vec3): void;
-}
-
-class ShaderProgram implements Program {
-    attribs: ProgramProperty<number>[];
-    uniforms: ProgramProperty<WebGLUniformLocation>[];
+class Program {
+    private static instances = 0;
+    readonly id = ++Program.instances;
+    readonly attribs: ProgramProperty<number>[];
+    readonly uniforms: ProgramProperty<WebGLUniformLocation>[];
 
     constructor(
         public gl: WebGL2RenderingContext,
@@ -108,7 +100,7 @@ class ProgramBuilder {
             if (!gl.getProgramParameter(glid, gl.LINK_STATUS)) {
                 reject(gl.getProgramInfoLog(glid));
             } else {
-                resolve(new ShaderProgram(gl, glid, getAttributes(glid), getUniforms(glid)));
+                resolve(new Program(gl, glid, getAttributes(glid), getUniforms(glid)));
             }
 
             /**
