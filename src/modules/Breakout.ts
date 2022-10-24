@@ -37,29 +37,29 @@ class Breakout {
             renderer.addModel(tag, model2);
 
             renderer.composeBuffers();
-            startGame(renderer);
+            this.run();
             Promise.resolve(this);
         });
+    }
+
+    private run() {
+        let then = 0;
+
+        let render = (now: DOMHighResTimeStamp) => {
+            now *= 0.001;
+            const deltaTime = now - then;
+            then = now;
+    
+            this.renderer.render(deltaTime);
+            requestAnimationFrame(render);
+        }
+    
+        requestAnimationFrame(render);
     }
 
     destory() {
         return;
     }
-}
-
-function startGame(renderer: Renderer) {
-    let then = 0;
-
-    function render(now: number) {
-        now *= 0.001;
-        const deltaTime = now - then;
-        then = now;
-
-        renderer.render(deltaTime);
-        requestAnimationFrame(render);
-    }
-
-    requestAnimationFrame(render);
 }
 
 export { Breakout };
