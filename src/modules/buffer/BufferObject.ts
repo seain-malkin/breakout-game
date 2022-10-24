@@ -8,15 +8,16 @@ import { BufferComposable } from './buffer';
 abstract class BufferObject implements BufferComposable {
     abstract type: number;
     private buffer: WebGLBuffer;
+    _usage: GLenum = GL_STATIC_DRAW;
 
     constructor(
         public target: GLenum, 
         public data: ArrayBuffer,
         public _count: number,
-        public _usage?: GLenum
+        usage?: GLenum,
     ) {
-        if (_usage != null) {
-            this.usage = _usage;
+        if (usage != null) {  
+            this.usage = usage;
         }
     }
 
@@ -34,7 +35,14 @@ abstract class BufferObject implements BufferComposable {
         }
     }
 
+    get usage() {
+        return this._usage;
+    }
+
     compose(gl: WebGL2RenderingContext) {
+        // Since a buffer is shared amongst models it might already be composed
+        if (this.buffer) return;
+
         this.buffer = gl.createBuffer();
         gl.bindBuffer(this.target, this.buffer);
         gl.bufferData(this.target, this.data, this.usage);
@@ -42,6 +50,7 @@ abstract class BufferObject implements BufferComposable {
 
     decompose(gl: WebGL2RenderingContext) {
         gl.deleteBuffer(this.buffer);
+        this.buffer = undefined;
     }
 }
 

@@ -1,24 +1,21 @@
 import { ProgramBuilder, Program, ShaderResource, ProgramKey } from "./Program";
 import { Model } from "../object/Model";
 
+/**
+ * Takes a list of programs and associates a list of models with each.
+ * The renderers job is to draw each model with its associated program.
+ */
 class Renderer {
-    private _context: WebGL2RenderingContext;
-    private canvasElement: HTMLCanvasElement;
-
-    //private programs: Record<string, Program> = {};
-    //private models: Record<ProgramKey, Model[]> = {};
+    readonly context: WebGL2RenderingContext;
+    readonly canvasElement: HTMLCanvasElement;
 
     private programs = new Array<[string, Program]>();
     private models = new Array<[ProgramKey, Model[]]>();
 
     constructor(canvasId: string) {
         this.canvasElement = this.getCanvasElement(canvasId);
-        this._context = this.getCanvasContext(this.canvasElement);
+        this.context = this.getCanvasContext(this.canvasElement);
         
-    }
-
-    get context(): WebGL2RenderingContext {
-        return this._context;
     }
 
     /**
@@ -39,6 +36,12 @@ class Renderer {
         models.push(model);
     }
 
+    /**
+     * Creates a Shader Program asynchronously.
+     * @param tag A name that identifies the program
+     * @param shaders An array of shader GLSL source and type
+     * @returns A tuple with the tag and created program wrapped in a promise
+     */
     createProgram(tag: string, shaders: ShaderResource[]): Promise<[string, Program]> {
         const builder = new ProgramBuilder();
         for (const shader of shaders) {
@@ -67,10 +70,22 @@ class Renderer {
         return program;
     }
 
+    /**
+     * Loads the buffers of each model into graphics memory
+     */
     composeBuffers() {
-        
+        for (const [ , models ] of this.models) {
+            models.forEach((model) => {
+                model.compose(this.context);
+            });
+        }
     }
 
+    /**
+     * Gets the WebGL context from a canvas HTML element.
+     * @param element The HTML canvas element object to extract the context
+     * @returns A WebGL2 context
+     */
     private getCanvasContext(element: HTMLCanvasElement): WebGL2RenderingContext {
         const context = element.getContext("webgl2");
         if (context == null) {
@@ -80,6 +95,11 @@ class Renderer {
         return context;
     }
 
+    /**
+     * Finds the HTML canvas element with the given ID.
+     * @param elementId The ID of the HTML canvas element
+     * @returns A HTML canvas element object
+     */
     private getCanvasElement(elementId: string): HTMLCanvasElement {
         const element = document.querySelector<HTMLCanvasElement>(`#${elementId}`);
         if (element == null) {

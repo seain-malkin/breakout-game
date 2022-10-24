@@ -35,6 +35,8 @@ class Breakout {
             const model2 = new Model(plane, new Material());
             renderer.addModel(tag, model);
             renderer.addModel(tag, model2);
+        }).then(() => {
+            renderer.composeBuffers();
         });
     }
 }
