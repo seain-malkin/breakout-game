@@ -15,7 +15,10 @@ class Renderer {
     constructor(canvasId: string) {
         this.canvasElement = this.getCanvasElement(canvasId);
         this.context = this.getCanvasContext(this.canvasElement);
-        
+    }
+
+    render(deltaTime: number) {
+        console.log(deltaTime);
     }
 
     /**

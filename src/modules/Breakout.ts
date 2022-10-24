@@ -19,9 +19,9 @@ class Breakout {
         this.renderer = new Renderer(canvasId);
     }
 
-    initResources() {
+    create(): Promise<void | Breakout> {
         const renderer = this.renderer;
-        renderer.createProgram('material', [
+        return renderer.createProgram('material', [
             [ GL_VERTEX_SHADER, materialVsSrc ],
             [ GL_FRAGMENT_SHADER, materialFsSrc ],
         ]).then((result) => {
@@ -35,10 +35,31 @@ class Breakout {
             const model2 = new Model(plane, new Material());
             renderer.addModel(tag, model);
             renderer.addModel(tag, model2);
-        }).then(() => {
+
             renderer.composeBuffers();
+            startGame(renderer);
+            Promise.resolve(this);
         });
     }
+
+    destory() {
+        return;
+    }
+}
+
+function startGame(renderer: Renderer) {
+    let then = 0;
+
+    function render(now: number) {
+        now *= 0.001;
+        const deltaTime = now - then;
+        then = now;
+
+        renderer.render(deltaTime);
+        requestAnimationFrame(render);
+    }
+
+    requestAnimationFrame(render);
 }
 
 export { Breakout };
