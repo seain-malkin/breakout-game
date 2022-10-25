@@ -44,3 +44,5 @@ class Scene {
         return this.models.findIndex(([ key, _ ]) => key === tag);
     }
 }
+
+export { Scene };
