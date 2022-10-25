@@ -2,7 +2,7 @@ import { Model } from "../object/Model";
 
 class Scene {
     // Tuple. Model array indexed by program name
-    models = new Array<[string, Array<Model>]>();
+    readonly models = new Array<[string, Array<Model>]>();
     // camera
 
     /**
