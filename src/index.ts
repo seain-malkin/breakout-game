@@ -1,4 +1,4 @@
-import { Breakout } from "./modules/Breakout";
+import { Breakout } from "./Breakout";
 
 const breakout = new Breakout("brkt_canvas");
 
