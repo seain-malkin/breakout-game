@@ -1,9 +1,22 @@
 import { Model } from "../object/Model";
 
 class Scene {
-    // Tuple. Model array indexed by program name
     readonly models = new Array<[string, Array<Model>]>();
     // camera
+
+    /**
+     * Retrieve a list of models associated with a program.
+     * @param tag Name of program models are associated with
+     * @returns List of models for the given program
+     */
+    getModels(tag: string): Array<Model> {
+        let index = this.findProgramModelArrayIndex(tag);
+        if (index === -1) {
+            return new Array<Model>();
+        }
+        const [ _, models ] = this.models[index];
+        return models;
+    }
 
     /**
      * Adds a model to the scene that will be rendered on the 

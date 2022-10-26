@@ -51,3 +51,22 @@ test('Remove a non existent model', () => {
     scene.removeModel(tag, model);
     expect(scene.models.length).toBe(0);
 });
+
+test('Iterate over non-existent program', () => {
+    let counter = 0;
+    for (const model of scene.getModels("foo")) {
+        counter++;
+    }
+    expect(counter).toBe(0);
+});
+
+test('Iterate over program with models', () => {
+    const tag = "foo";
+    const models = [ model, model, model, model ];
+    scene.addModel(tag, models);
+    let counter = 0;
+    for (const model of scene.getModels(tag)) {
+        counter++;
+    }
+    expect(counter).toBe(models.length);
+});
