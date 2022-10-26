@@ -11,31 +11,37 @@ class Scene {
      * @param tag Identifies the program used to draw the model
      * @param model A model to be added to the rendered scene
      */
-    addModel(tag: string, model: Model) {
+    addModel(tag: string, model: Model[] | Model) {
+        const modelGroup = model instanceof Model ? [model] : model;
         let index = this.findProgramModelArrayIndex(tag);
         if (index === -1) {
             // First time program name encountered.
             const length = this.models.push([tag, new Array<Model>()]);
             index = length - 1;
         }
-        const [ _, models ] = this.models[index];
-        models.push(model);
+        for (const model of modelGroup) {
+            const [ _, models ] = this.models[index];
+            models.push(model);
+        }
     }
 
     /**
      * Removes a model associated with a program from the scene.
      * @param tag Identifies the program used to draw the model
-     * @param model The model to be removed from the scene
+     * @param model The model(s) to be removed from the scene
      */
-    removeModel(tag: string, model: Model): void {
+    removeModel(tag: string, model: Model[] | Model): void {
+        const modelGroup = model instanceof Model ? [model] : model;
         let index = this.findProgramModelArrayIndex(tag);
         if (index === -1) return; // No program association
 
-        const [ _, models ] = this.models[index];
-        for (let i = 0; i < models.length; i++) {
-            if (models[i] === model) {
-                models.splice(i, 1);
-                break;
+        for (const model of modelGroup) {
+            const [ _, models ] = this.models[index];
+            for (let i = 0; i < models.length; i++) {
+                if (models[i] === model) {
+                    models.splice(i, 1);
+                    break;
+                }
             }
         }
     }
