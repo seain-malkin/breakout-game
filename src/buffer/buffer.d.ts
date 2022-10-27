@@ -1,7 +1,7 @@
 import { Program } from "../core/Program";
 
 declare interface BufferComposable {
-    compose(gl: WebGL2RenderingContext): void;
+    compose(gl: WebGL2RenderingContext, program: Program): void;
     decompose(gl: WebGL2RenderingContext): void;
 }
 

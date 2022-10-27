@@ -10,6 +10,13 @@ interface ProgramProperty<T extends number | WebGLUniformLocation> {
     location: T;
 }
 
+enum ProgramInput {
+    POSITION = 'position',
+    MODEL_VIEW = 'modelView',
+    PROJECTION = 'projection',
+    COLOR = 'color',
+}
+
 class Program {
     private static instances = 0;
     readonly id: ProgramKey = ++Program.instances;
@@ -154,4 +161,4 @@ class ProgramBuilder {
     }
 }
 
-export { ProgramBuilder, Program, ProgramKey, ShaderResource };
+export { ProgramBuilder, Program, ProgramKey, ShaderResource, ProgramInput };

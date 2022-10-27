@@ -3,6 +3,7 @@ import {
     GL_STATIC_COPY, 
     GL_STATIC_READ,
 } from 'webgl-constants';
+import { Program } from '../core/Program';
 import { BufferComposable } from './buffer';
 
 abstract class BufferObject implements BufferComposable {
@@ -39,7 +40,7 @@ abstract class BufferObject implements BufferComposable {
         return this._usage;
     }
 
-    compose(gl: WebGL2RenderingContext) {
+    compose(gl: WebGL2RenderingContext, program: Program) {
         // Since a buffer is shared amongst models it might already be composed
         if (this.buffer) return;
 

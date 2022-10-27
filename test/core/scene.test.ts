@@ -1,7 +1,6 @@
 import { Scene } from '../../src/core/Scene';
-import { Model } from '../../src/object/Model';
-import { Plane } from '../../src/geometry/Plane';
-import { Material } from '../../src/material/Material';
+import { Model } from '../../src/model/Model';
+import { Brick } from '../../src/model/Brick';
 import { PerspectiveCamera } from '../../src/camera/PerspectiveCamera';
 
 let scene: Scene;
@@ -9,7 +8,7 @@ let model: Model;
 
 beforeEach(() => {
     scene = new Scene(new PerspectiveCamera());
-    model = new Model(new Plane(0), new Material());
+    model = new Brick();
 });
 
 test('Add a model', () => {
@@ -19,7 +18,7 @@ test('Add a model', () => {
 });
 
 test('Add two models then remove one', () => {
-    const model2 = new Model(new Plane(0), new Material());
+    const model2 = new Brick();
     const tag = "test_program";
     scene.addModel(tag, model);
     scene.addModel(tag, model2);

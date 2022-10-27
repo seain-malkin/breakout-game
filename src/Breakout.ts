@@ -4,7 +4,7 @@ import materialFsSrc from './shader/material.fs.glsl';
 import { GL_VERTEX_SHADER, GL_FRAGMENT_SHADER } from 'webgl-constants';
 import { Renderer } from './core/Renderer';
 import { Plane } from './geometry/Plane';
-import { Model } from './object/Model';
+import { Model } from './model/Model';
 import { Material } from './material/Material';
 
 /**
@@ -30,7 +30,7 @@ class Breakout {
             if (attrib == null) {
                 throw new Error(`Attrib 'position' not found.`);
             }
-            const plane = new Plane(attrib.location);
+            const plane = new Plane();
             const model = new Model(plane, new Material());
             const model2 = new Model(plane, new Material());
             renderer.addModel(tag, model);

@@ -1,4 +1,4 @@
-import { WorldObject } from "./WorldObject";
+import { WorldObject } from "../core/WorldObject";
 import { Program } from "../core/Program";
 import { GeometryBuffer } from "../buffer/GeometryBuffer";
 import { Material } from "../material/Material";
@@ -18,8 +18,8 @@ implements BufferComposable, BufferDrawable {
         this.geometry.draw(gl);
     }
 
-    compose(gl: WebGL2RenderingContext): void {
-        this.geometry.compose(gl);
+    compose(gl: WebGL2RenderingContext, program: Program): void {
+        this.geometry.compose(gl, program);
     }
 
     decompose(gl: WebGL2RenderingContext): void {

@@ -2,12 +2,13 @@ import { BufferAttribute } from "../buffer/BufferAttribute";
 import { GeometryBuffer } from "../buffer/GeometryBuffer";
 import { Unit16IndexBuffer } from "../buffer/IndexBuffer";
 import { Float32VertexBuffer } from "../buffer/VertexBuffer";
+import { ProgramInput } from "../core/Program";
 
 class Plane extends GeometryBuffer {
-    constructor(attribLoc: number) {
+    constructor() {
         super();
         const vertexBuffer = new Float32VertexBuffer(vertices);
-        vertexBuffer.attachAttribute(attribLoc, new BufferAttribute(3));
+        vertexBuffer.attachAttribute(ProgramInput.POSITION, new BufferAttribute(3));
         this.vertexBuffers.push(vertexBuffer);
         this.indexBuffer = new Unit16IndexBuffer(indices);
     }

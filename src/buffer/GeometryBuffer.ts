@@ -2,6 +2,7 @@ import { GL_TRIANGLES } from "webgl-constants";
 import { IndexBuffer } from "./IndexBuffer";
 import { VertexBuffer } from "./VertexBuffer";
 import { BufferComposable, BufferDrawable } from "./buffer";
+import { Program } from "../core/Program";
 
 class GeometryBuffer 
 implements BufferComposable, BufferDrawable {
@@ -10,14 +11,14 @@ implements BufferComposable, BufferDrawable {
     vertexBuffers = new Array<VertexBuffer>();
     indexBuffer: IndexBuffer;
     
-    compose(gl: WebGL2RenderingContext) {
+    compose(gl: WebGL2RenderingContext, program: Program) {
         this.vao = gl.createVertexArray();
         gl.bindVertexArray(this.vao);
         for (const buffer of this.vertexBuffers) {
-            buffer.compose(gl);
+            buffer.compose(gl, program);
         }
         if (this.indexBuffer) {
-            this.indexBuffer.compose(gl);
+            this.indexBuffer.compose(gl, program);
         }
         gl.bindVertexArray(null);
     }

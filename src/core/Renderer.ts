@@ -1,5 +1,5 @@
 import { ProgramBuilder, Program, ShaderResource, ProgramKey } from "./Program";
-import { Model } from "../object/Model";
+import { Model } from "../model/Model";
 
 /**
  * Takes a list of programs and associates a list of models with each.

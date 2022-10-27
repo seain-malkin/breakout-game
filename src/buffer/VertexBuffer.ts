@@ -1,14 +1,16 @@
+/// <reference path="./buffer.d.ts" />
 import { BufferObject } from "./BufferObject";
 import { BufferAttribute } from "./BufferAttribute";
 import { GL_ARRAY_BUFFER, GL_FLOAT, } from "webgl-constants";
 import { BufferComposable } from './buffer';
+import { Program, ProgramInput } from "../core/Program";
 
 abstract class VertexBuffer 
 extends BufferObject 
 implements BufferComposable {
     abstract type: number;
 
-    private attributes = new Array<[number, BufferAttribute]>();
+    private attributes = new Array<[ProgramInput, BufferAttribute]>();
 
     components: number = 0;
 
@@ -20,14 +22,14 @@ implements BufferComposable {
         super(GL_ARRAY_BUFFER, data, count, usage);
     }
 
-    attachAttribute(location: number, attribute: BufferAttribute) {
-        this.attributes.push([location, attribute]);
+    attachAttribute(input: ProgramInput, attribute: BufferAttribute) {
+        this.attributes.push([input, attribute]);
     }
 
-    compose(gl: WebGL2RenderingContext): void {
-        super.compose(gl);
-        for (const [index, attrib] of this.attributes) {
-            attrib.enable(gl, index, this.type);
+    compose(gl: WebGL2RenderingContext, program: Program): void {
+        super.compose(gl, program);
+        for (const [key, attrib] of this.attributes) {
+            attrib.enable(gl, program.getAttribute(key).location, this.type);
             this.components += attrib.size;
         }
         gl.bindBuffer(this.target, null);

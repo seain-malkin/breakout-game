@@ -1,6 +1,6 @@
 /// <reference path="../index.d.ts" />
 import { glMatrix, mat4 } from 'gl-matrix';
-import { WorldObject } from '../object/WorldObject';
+import { WorldObject } from '../core/WorldObject';
 
 abstract class Camera extends WorldObject {
     protected _projectionMatrix = mat4.create();
