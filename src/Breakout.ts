@@ -1,4 +1,4 @@
-/// <reference path="index.d.ts" />
+/// <reference path="./shader/glsl.d.ts" />
 import materialVsSrc from './shader/material.vs.glsl';
 import materialFsSrc from './shader/material.fs.glsl';
 import { GL_VERTEX_SHADER, GL_FRAGMENT_SHADER } from 'webgl-constants';
