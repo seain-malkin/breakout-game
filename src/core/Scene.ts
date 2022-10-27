@@ -1,8 +1,10 @@
+import { Camera } from "../camera/Camera";
 import { Model } from "../object/Model";
 
 class Scene {
     readonly models = new Array<[string, Array<Model>]>();
-    // camera
+
+    constructor(public camera: Camera) {}
 
     /**
      * Retrieve a list of models associated with a program.

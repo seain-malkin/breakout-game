@@ -2,12 +2,13 @@ import { Scene } from '../../src/core/Scene';
 import { Model } from '../../src/object/Model';
 import { Plane } from '../../src/geometry/Plane';
 import { Material } from '../../src/material/Material';
+import { PerspectiveCamera } from '../../src/camera/PerspectiveCamera';
 
 let scene: Scene;
 let model: Model;
 
 beforeEach(() => {
-    scene = new Scene();
+    scene = new Scene(new PerspectiveCamera());
     model = new Model(new Plane(0), new Material());
 });
 

@@ -1,4 +1,2 @@
-declare module '*.glsl' {
-    const value: string;
-    export default value;
-}
+declare type degree = number;
+declare type radian = number;
