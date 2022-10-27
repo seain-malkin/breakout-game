@@ -3,9 +3,9 @@ import materialVsSrc from './shader/material.vs.glsl';
 import materialFsSrc from './shader/material.fs.glsl';
 import { GL_VERTEX_SHADER, GL_FRAGMENT_SHADER } from 'webgl-constants';
 import { Renderer } from './core/Renderer';
-import { Plane } from './geometry/Plane';
-import { Model } from './model/Model';
-import { Material } from './material/Material';
+import { Brick } from './model/Brick';
+import { Scene } from './core/Scene';
+import { PerspectiveCamera } from './camera/PerspectiveCamera';
 
 /**
  * A simple Breakout clone based on the original rules described 
@@ -25,24 +25,20 @@ class Breakout {
             [ GL_VERTEX_SHADER, materialVsSrc ],
             [ GL_FRAGMENT_SHADER, materialFsSrc ],
         ]).then((result) => {
-            const [tag, program] = result;
-            const attrib = program.getAttribute('position');
-            if (attrib == null) {
-                throw new Error(`Attrib 'position' not found.`);
-            }
-            const plane = new Plane();
-            const model = new Model(plane, new Material());
-            const model2 = new Model(plane, new Material());
-            renderer.addModel(tag, model);
-            renderer.addModel(tag, model2);
+            const [tag, _] = result;
+            const scene = new Scene(new PerspectiveCamera());
+            const brick = new Brick();
 
-            renderer.composeBuffers();
-            this.run();
+            scene.addModel(tag, brick);
+            renderer.compose(scene);
+            
+            this.startRenderLoop();
+
             Promise.resolve(this);
         });
     }
 
-    private run() {
+    private startRenderLoop() {
         let then = 0;
 
         let render = (now: DOMHighResTimeStamp) => {

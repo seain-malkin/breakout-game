@@ -1,5 +1,5 @@
-import { ProgramBuilder, Program, ShaderResource, ProgramKey } from "./Program";
-import { Model } from "../model/Model";
+import { Program, ProgramBuilder, ShaderResource } from "./Program";
+import { Scene } from "./Scene";
 
 /**
  * Takes a list of programs and associates a list of models with each.
@@ -10,7 +10,6 @@ class Renderer {
     readonly canvasElement: HTMLCanvasElement;
 
     private programs = new Array<[string, Program]>();
-    private models = new Array<[ProgramKey, Model[]]>();
 
     constructor(canvasId: string) {
         this.canvasElement = this.getCanvasElement(canvasId);
@@ -19,24 +18,6 @@ class Renderer {
 
     render(deltaTime: number) {
         console.log(deltaTime);
-    }
-
-    /**
-     * Adds a model to the list of models to be drawn by a 
-     * given program.
-     * @param tag Identifies the program used to draw the model
-     * @param model The model to draw
-     */
-    addModel(tag: string, model: Model) {
-        const program = this.getProgram(tag);
-        if (!program) {
-            throw new Error(`Could not find a program with the tag '${tag}'.`);
-        }
-
-        // Search the models records for a program with the same id.
-        const [ , models ] = this.models.find(([ key, ]) => key === program.id);
-
-        models.push(model);
     }
 
     /**
@@ -54,7 +35,6 @@ class Renderer {
         return builder.build(this.context)
             .then((program) => {
                 this.programs.push([tag, program]);
-                this.models.push([program.id, new Array<Model>()]);
                 return Promise.resolve([tag, program]);
             });
     }
@@ -76,11 +56,11 @@ class Renderer {
     /**
      * Loads the buffers of each model into graphics memory
      */
-    composeBuffers() {
-        for (const [ , models ] of this.models) {
-            models.forEach((model) => {
-                model.compose(this.context);
-            });
+    compose(scene: Scene) {
+        for (const [tag, program] of this.programs) {
+            for (const model of scene.getModels(tag)) {
+                model.compose(this.context, program);
+            }
         }
     }
 
