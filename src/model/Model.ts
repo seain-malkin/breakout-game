@@ -14,7 +14,7 @@ implements BufferComposable, BufferDrawable {
     draw(gl: WebGL2RenderingContext, program: Program) {
         program.use(gl);
         program.updateProperty(gl, 'modelView', this.modelView);
-        program.updateProperty(gl, 'color', this.material.color);
+        this.material.draw(gl, program);
         this.geometry.draw(gl);
     }
 
@@ -26,8 +26,10 @@ implements BufferComposable, BufferDrawable {
         this.geometry.decompose(gl);
     }
 
-    copy() {
-        return {...super.copy(), ...this};
+    copy(from: Model) {
+        super.copy(from);
+        this.geometry = from.geometry;
+        this.material = from.material.clone();
     }
 }
 

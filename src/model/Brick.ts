@@ -3,8 +3,18 @@ import { Material } from "../material/Material";
 import { Model } from "./Model";
 
 class Brick extends Model {
-    constructor() {
-        super(new Plane(), new Material());
+    constructor(material: Material) {
+        super(Plane.getInstance(), material);
+    }
+
+    clone(): Brick {
+        const other = new Brick(this.material);
+        other.copy(this);
+        return other;
+    }
+
+    copy(from: Brick) {
+        super.copy(from);
     }
 }
 

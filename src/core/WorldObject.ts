@@ -38,8 +38,10 @@ abstract class WorldObject {
         mat4.translate(this._modelView, this._modelView, this.position);
     }
 
-    copy() {
-        return {...this};
+    copy(from: WorldObject) {
+        this._position = vec3.clone(from._position);
+        this._scale = vec3.clone(from._scale);
+        this.updateModelViewMatrix();
     }
 }
 

@@ -1,7 +1,10 @@
-import { vec3 } from "gl-matrix";
+import { BufferDrawable } from "../buffer/buffer";
+import { Program } from "../core/Program";
 
-class Material {
-    color: vec3 = [0.5, 0.5, 0.5];
+abstract class Material implements BufferDrawable {
+    abstract draw(gl: WebGL2RenderingContext, program: Program): void;
+
+    abstract clone(): Material;
 }
 
 export { Material };
