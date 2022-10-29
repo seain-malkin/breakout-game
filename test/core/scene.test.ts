@@ -1,14 +1,17 @@
 import { Scene } from '../../src/core/Scene';
 import { Model } from '../../src/model/Model';
 import { Brick } from '../../src/model/Brick';
+import { BasicMaterial } from '../../src/material/BasicMaterial';
 import { PerspectiveCamera } from '../../src/camera/PerspectiveCamera';
 
 let scene: Scene;
 let model: Model;
+let material: BasicMaterial;
 
 beforeEach(() => {
     scene = new Scene(new PerspectiveCamera());
-    model = new Brick();
+    material = new BasicMaterial([0.5, 0.5, 0.5]);
+    model = new Brick(material);
 });
 
 test('Add a model', () => {
@@ -18,7 +21,7 @@ test('Add a model', () => {
 });
 
 test('Add two models then remove one', () => {
-    const model2 = new Brick();
+    const model2 = new Brick(material);
     const tag = "test_program";
     scene.addModel(tag, model);
     scene.addModel(tag, model2);
