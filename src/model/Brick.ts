@@ -12,6 +12,7 @@ class Brick extends Model {
 
     constructor(material: Material) {
         super(Plane.getInstance(), material);
+        this.scale.reset([1.0, 1.0, 1.0]);
     }
 
     clone(): Brick {

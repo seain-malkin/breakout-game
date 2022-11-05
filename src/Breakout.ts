@@ -8,6 +8,16 @@ import { Scene } from './core/Scene';
 import { PerspectiveCamera } from './camera/PerspectiveCamera';
 import { BasicMaterial } from './material/BasicMaterial';
 import { Axis } from './core/Axis3D';
+import { vec3 } from 'gl-matrix';
+
+const colors = {
+    yellow: vec3.fromValues(1.0, 1.0, 0.0),
+    green: vec3.fromValues(0.0, 1.0, 0.0),
+    orange:vec3.fromValues(1.0, 0.0, 1.0),
+    red: vec3.fromValues(1.0, 0.0, 0.0),
+};
+
+const rowColors: vec3[] = [colors.yellow, colors.green, colors.orange, colors.red];
 
 /**
  * A simple Breakout clone based on the original rules described 
@@ -31,31 +41,18 @@ class Breakout {
         ]).then((result) => {
             const [tag, _] = result;
             this.scene = new Scene(new PerspectiveCamera());
+            this.scene.camera.fov = 55;
 
-            const spacing = 0.015;
-            const scaleY = 0.25;
-            const brick = new Brick(new BasicMaterial([0.5, 0.5, 0.5]));
-            brick.position.reset([-1.0, 0.0, -7.0]);
-            brick.scale.reset([1.0, scaleY, 1.0]);
-
-            const brick2 = brick.clone();
-            brick2.position.adjust(1.0 + spacing, Axis.X);
-            const brick3 = brick2.clone();
-            brick3.position.adjust(1.0 + spacing, Axis.X);
-            const brick4 = brick.clone();
-            brick4.position.adjust(1.0 + spacing * (1 / scaleY), Axis.Y);
-            brick4.material = new BasicMaterial([0.0, 1.0, 0.0]);
-            const brick5 = brick4.clone();
-            brick5.position.adjust(1.0 + spacing, Axis.X);
-            const brick6 = brick5.clone();
-            brick6.position.adjust(1.0 + spacing, Axis.X);
+            //this.generateBricks();
+            const width = renderer.gl.canvas.clientWidth;
+            const height = renderer.gl.canvas.clientHeight;
+            
+            console.log(width, height);
+            const brick = new Brick(new BasicMaterial([1.0, 0.0, 1.0]));
+            brick.position.reset([-0.0, 0.0, -0.0]);
+            brick.scale.reset(1.0 * (height / width), Axis.X);
 
             this.bricks.push(brick);
-            this.bricks.push(brick2);
-            this.bricks.push(brick3);
-            this.bricks.push(brick4);
-            this.bricks.push(brick5);
-            this.bricks.push(brick6);
 
             this.scene.addModel(tag, this.bricks);
             renderer.compose(this.scene);
@@ -64,6 +61,31 @@ class Breakout {
 
             Promise.resolve(this);
         });
+    }
+
+    private generateBricks() {
+        const columns = 9;
+        const rows = 8;
+        const spacing = 0.03;
+        const scaleY = 0.25;
+        const middle = Math.floor(columns / 2);
+        const xOffset = ((middle * spacing) + middle) * -1;
+        const brickTemplate = new Brick(new BasicMaterial([1.0, 1.0, 1.0]));
+        brickTemplate.position.reset([xOffset, 0.0, -7.0]);
+        brickTemplate.scale.reset([1.0, scaleY, 1.0]);
+
+        for (let row = 0; row < rows; row++) { 
+            const material = new BasicMaterial(rowColors[Math.floor(row / 2)]);
+            const padY = spacing * row * (1 / scaleY);
+            for (let column = 0; column < columns; column++) {
+                const padX = spacing * column;
+                const brick = brickTemplate.clone();
+                brick.position.adjust(column + padX, Axis.X);
+                brick.position.adjust(row + padY, Axis.Y);
+                brick.material = material;
+                this.bricks.push(brick);
+            }
+        }
     }
 
     private startRenderLoop() {

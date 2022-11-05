@@ -8,6 +8,6 @@ uniform vec3 color;
 out mediump vec4 fragColor;
 
 void main() {
-    gl_Position = projection * modelView * position;
+    gl_Position =   modelView * position;
     fragColor = vec4(color, 1.0);
 }
