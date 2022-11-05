@@ -12,6 +12,8 @@ implements BufferComposable, BufferDrawable {
     indexBuffer: IndexBuffer;
     
     compose(gl: WebGL2RenderingContext, program: Program) {
+        if (this.vao) return;
+
         this.vao = gl.createVertexArray();
         gl.bindVertexArray(this.vao);
         for (const buffer of this.vertexBuffers) {
@@ -39,7 +41,6 @@ implements BufferComposable, BufferDrawable {
         if (this.indexBuffer) {
             const { count, type } = this.indexBuffer;
             gl.drawElements(this.drawMode, count, type, 0);
-            console.log(count);
         } else {
             gl.drawArrays(this.drawMode, 0, this.vertexBuffers[0].count);
         }

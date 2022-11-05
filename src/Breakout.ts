@@ -31,7 +31,20 @@ class Breakout {
             const [tag, _] = result;
             this.scene = new Scene(new PerspectiveCamera());
             const brick = new Brick(new BasicMaterial([0.5, 0.5, 0.5]));
+            brick.scale = [1.0, 0.5, 1.0];
+            const brick2 = brick.clone();
+            const brick3 = brick.clone();
+            const brick4 = brick.clone();
+            brick.position = [-1.1, 0.0, -6.0];
+            brick2.position = [0.0, 0.0, -6.0];
+            brick3.position = [1.1, 0.0, -6.0];
+            brick4.position = [0.0, 1.2, -6.0];
+            brick4.material = new BasicMaterial([0.5, 1.0, 0.5]);
+
             this.bricks.push(brick);
+            this.bricks.push(brick2);
+            this.bricks.push(brick3);
+            this.bricks.push(brick4);
 
             this.scene.addModel(tag, this.bricks);
             renderer.compose(this.scene);
