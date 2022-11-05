@@ -1,3 +1,4 @@
+import { Axis } from "../core/Axis3D";
 import { Plane } from "../geometry/Plane";
 import { Material } from "../material/Material";
 import { Model } from "./Model";
@@ -7,6 +8,8 @@ import { Model } from "./Model";
  * hit by the ball.
  */
 class Brick extends Model {
+    margin = 0.1;
+
     constructor(material: Material) {
         super(Plane.getInstance(), material);
     }

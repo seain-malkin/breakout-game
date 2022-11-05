@@ -7,6 +7,7 @@ import { Brick } from './model/Brick';
 import { Scene } from './core/Scene';
 import { PerspectiveCamera } from './camera/PerspectiveCamera';
 import { BasicMaterial } from './material/BasicMaterial';
+import { Axis } from './core/Axis3D';
 
 /**
  * A simple Breakout clone based on the original rules described 
@@ -30,21 +31,31 @@ class Breakout {
         ]).then((result) => {
             const [tag, _] = result;
             this.scene = new Scene(new PerspectiveCamera());
+
+            const spacing = 0.015;
+            const scaleY = 0.25;
             const brick = new Brick(new BasicMaterial([0.5, 0.5, 0.5]));
-            brick.scale = [1.0, 0.5, 1.0];
+            brick.position.reset([-1.0, 0.0, -7.0]);
+            brick.scale.reset([1.0, scaleY, 1.0]);
+
             const brick2 = brick.clone();
-            const brick3 = brick.clone();
+            brick2.position.adjust(1.0 + spacing, Axis.X);
+            const brick3 = brick2.clone();
+            brick3.position.adjust(1.0 + spacing, Axis.X);
             const brick4 = brick.clone();
-            brick.position = [-1.1, 0.0, -6.0];
-            brick2.position = [0.0, 0.0, -6.0];
-            brick3.position = [1.1, 0.0, -6.0];
-            brick4.position = [0.0, 1.2, -6.0];
-            brick4.material = new BasicMaterial([0.5, 1.0, 0.5]);
+            brick4.position.adjust(1.0 + spacing * (1 / scaleY), Axis.Y);
+            brick4.material = new BasicMaterial([0.0, 1.0, 0.0]);
+            const brick5 = brick4.clone();
+            brick5.position.adjust(1.0 + spacing, Axis.X);
+            const brick6 = brick5.clone();
+            brick6.position.adjust(1.0 + spacing, Axis.X);
 
             this.bricks.push(brick);
             this.bricks.push(brick2);
             this.bricks.push(brick3);
             this.bricks.push(brick4);
+            this.bricks.push(brick5);
+            this.bricks.push(brick6);
 
             this.scene.addModel(tag, this.bricks);
             renderer.compose(this.scene);

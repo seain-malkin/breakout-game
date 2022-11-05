@@ -25,6 +25,10 @@ abstract class Camera extends WorldObject implements BufferDrawable {
 
     abstract updateProjectionMatrix(): void;
 
+    beforeMatrixUpdate(): void {
+        // Do nothing
+    }
+
     get projectionMatrix() {
         if (this.modified) {
             this.updateProjectionMatrix();

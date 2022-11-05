@@ -4,7 +4,7 @@ import { GeometryBuffer } from "../buffer/GeometryBuffer";
 import { Material } from "../material/Material";
 import { BufferComposable, BufferDrawable } from "../buffer/buffer";
 
-class Model 
+abstract class Model 
 extends WorldObject
 implements BufferComposable, BufferDrawable {
     constructor(public geometry: GeometryBuffer, public material: Material) {
