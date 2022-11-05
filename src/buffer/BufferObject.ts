@@ -40,10 +40,10 @@ abstract class BufferObject implements BufferComposable {
         return this._usage;
     }
 
-    compose(gl: WebGL2RenderingContext, program: Program) {
+    compose(gl: WebGL2RenderingContext, program?: Program) {
         // Since a buffer is shared amongst models it might already be composed
-        if (this.buffer) return;
-
+        if (this.buffer) return;    
+        
         this.buffer = gl.createBuffer();
         gl.bindBuffer(this.target, this.buffer);
         gl.bufferData(this.target, this.data, this.usage);

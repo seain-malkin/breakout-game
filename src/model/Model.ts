@@ -12,7 +12,6 @@ implements BufferComposable, BufferDrawable {
     }
 
     draw(gl: WebGL2RenderingContext, program: Program) {
-        program.use(gl);
         program.updateProperty(gl, 'modelView', this.modelView);
         this.material.draw(gl, program);
         this.geometry.draw(gl);

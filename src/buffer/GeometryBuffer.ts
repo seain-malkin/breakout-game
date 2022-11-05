@@ -18,7 +18,7 @@ implements BufferComposable, BufferDrawable {
             buffer.compose(gl, program);
         }
         if (this.indexBuffer) {
-            this.indexBuffer.compose(gl, program);
+            this.indexBuffer.compose(gl);
         }
         gl.bindVertexArray(null);
     }
@@ -39,6 +39,7 @@ implements BufferComposable, BufferDrawable {
         if (this.indexBuffer) {
             const { count, type } = this.indexBuffer;
             gl.drawElements(this.drawMode, count, type, 0);
+            console.log(count);
         } else {
             gl.drawArrays(this.drawMode, 0, this.vertexBuffers[0].count);
         }

@@ -1,5 +1,5 @@
 import { BufferObject } from "./BufferObject";
-import { GL_ELEMENT_ARRAY_BUFFER, GL_UNSIGNED_INT, GL_TRIANGLES, } from "webgl-constants";
+import { GL_ELEMENT_ARRAY_BUFFER, GL_TRIANGLES, GL_UNSIGNED_SHORT, } from "webgl-constants";
 import { BufferComposable } from './buffer';
 
 abstract class IndexBuffer 
@@ -23,7 +23,7 @@ implements BufferComposable {
 }
 
 class Unit16IndexBuffer extends IndexBuffer {
-    type = GL_UNSIGNED_INT;
+    type = GL_UNSIGNED_SHORT;
 
     constructor(data: number[], usage?: GLenum) {
         super(new Uint16Array(data), data.length ,usage);

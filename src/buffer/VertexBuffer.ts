@@ -32,7 +32,6 @@ implements BufferComposable {
             attrib.enable(gl, program.getAttribute(key).location, this.type);
             this.components += attrib.size;
         }
-        gl.bindBuffer(this.target, null);
     }
 
     get count(): number {

@@ -1,6 +1,6 @@
 import { Breakout } from "./Breakout";
 
-const breakout = new Breakout("brkt_canvas");
+const breakout = new Breakout("breakout");
 
 breakout.create()
     .then((breakout: Breakout) => {

@@ -1,5 +1,6 @@
 import { Program, ProgramBuilder, ShaderResource } from "./Program";
 import { Scene } from "./Scene";
+import { Dimensions, getHtmlElementDimensions } from "./Util";
 
 /**
  * Takes a list of programs and associates a list of models with each.
@@ -8,6 +9,7 @@ import { Scene } from "./Scene";
 class Renderer {
     readonly context: WebGL2RenderingContext;
     readonly canvasElement: HTMLCanvasElement;
+    dimensions: Dimensions = { width: 800, height: 600 };
 
     private programs = new Array<[string, Program]>();
 
@@ -16,8 +18,26 @@ class Renderer {
         this.context = this.getCanvasContext(this.canvasElement);
     }
 
-    render(deltaTime: number) {
-        console.log(deltaTime);
+    render(scene: Scene, deltaTime: number) {
+        const canvasDims = getHtmlElementDimensions(this.context.canvas);
+        if (canvasDims.height !== this.dimensions.height) {
+            this.dimensions = canvasDims;
+            this.context.viewport(0, 0, canvasDims.width, canvasDims.height);
+        }
+        this.context.clearColor(0, 0, 0, 1);
+        this.context.clearDepth(1.0);
+        this.context.enable(this.context.DEPTH_TEST);
+        this.context.clear(this.context.COLOR_BUFFER_BIT | this.context.DEPTH_BUFFER_BIT);
+        
+        for (const [ tag, program ] of this.programs) {
+            program.use(this.context);
+            scene.camera.aspect = canvasDims.width / canvasDims.height;
+            scene.camera.draw(this.context, program);
+            for (const model of scene.getModels(tag)) {
+                model.position = [0.0, 0.0, -6.0];
+                model.draw(this.context, program);
+            }
+        }
     }
 
     /**
@@ -58,6 +78,7 @@ class Renderer {
      */
     compose(scene: Scene) {
         for (const [tag, program] of this.programs) {
+            program.use(this.context);
             for (const model of scene.getModels(tag)) {
                 model.compose(this.context, program);
             }

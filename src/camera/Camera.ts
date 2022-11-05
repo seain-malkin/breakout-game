@@ -1,13 +1,15 @@
 /// <reference path="../index.d.ts" />
 import { glMatrix, mat4 } from 'gl-matrix';
+import { BufferDrawable } from '../buffer/buffer';
+import { Program } from '../core/Program';
 import { WorldObject } from '../core/WorldObject';
 
-abstract class Camera extends WorldObject {
+abstract class Camera extends WorldObject implements BufferDrawable {
     protected _projectionMatrix = mat4.create();
 
     protected _fov: radian;
 
-    private modified = false;
+    private modified = true;
 
     constructor(
         fov: degree = 45,
@@ -18,6 +20,8 @@ abstract class Camera extends WorldObject {
         super();
         this.fov = fov;
     }
+
+    abstract draw(gl: WebGL2RenderingContext, program: Program): void;
 
     abstract updateProjectionMatrix(): void;
 

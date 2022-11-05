@@ -6,6 +6,7 @@ import { Renderer } from './core/Renderer';
 import { Brick } from './model/Brick';
 import { Scene } from './core/Scene';
 import { PerspectiveCamera } from './camera/PerspectiveCamera';
+import { BasicMaterial } from './material/BasicMaterial';
 
 /**
  * A simple Breakout clone based on the original rules described 
@@ -14,6 +15,8 @@ import { PerspectiveCamera } from './camera/PerspectiveCamera';
  */
 class Breakout {
     private renderer: Renderer;
+    private scene: Scene;
+    private bricks = new Array<Brick>();
 
     constructor(canvasId: string) {
         this.renderer = new Renderer(canvasId);
@@ -26,11 +29,12 @@ class Breakout {
             [ GL_FRAGMENT_SHADER, materialFsSrc ],
         ]).then((result) => {
             const [tag, _] = result;
-            const scene = new Scene(new PerspectiveCamera());
-            const brick = new Brick();
+            this.scene = new Scene(new PerspectiveCamera());
+            const brick = new Brick(new BasicMaterial([0.5, 0.5, 0.5]));
+            this.bricks.push(brick);
 
-            scene.addModel(tag, brick);
-            renderer.compose(scene);
+            this.scene.addModel(tag, this.bricks);
+            renderer.compose(this.scene);
             
             this.startRenderLoop();
 
@@ -46,7 +50,7 @@ class Breakout {
             const deltaTime = now - then;
             then = now;
     
-            this.renderer.render(deltaTime);
+            this.renderer.render(this.scene, deltaTime);
             requestAnimationFrame(render);
         }
     
