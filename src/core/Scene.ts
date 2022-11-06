@@ -1,12 +1,7 @@
-import { Camera } from "../camera/Camera";
 import { Model } from "../model/Model";
 
 class Scene {
-    readonly models: Array<[string, Array<Model>]>;
-
-    constructor(public camera: Camera) {
-        this.models = new Array();
-    }
+    readonly models = new Array<[string, Array<Model>]>();
 
     /**
      * Retrieve a list of models associated with a program.
@@ -61,10 +56,6 @@ class Scene {
                 }
             }
         }
-    }
-
-    scale(width: number, height: number) {
-        
     }
 
     private findProgramModelArrayIndex(tag: string): number {

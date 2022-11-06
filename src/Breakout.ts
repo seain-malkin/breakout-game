@@ -1,13 +1,12 @@
 /// <reference path="./shader/glsl.d.ts" />
-import materialVsSrc from './shader/material.vs.glsl';
-import materialFsSrc from './shader/material.fs.glsl';
+import basicVertSrc from './shader/basic.vs.glsl';
+import basicFragSrc from './shader/basic.fs.glsl';
 import { GL_VERTEX_SHADER, GL_FRAGMENT_SHADER } from 'webgl-constants';
 import { Renderer } from './core/Renderer';
 import { Brick } from './model/Brick';
 import { Scene } from './core/Scene';
-import { PerspectiveCamera } from './camera/PerspectiveCamera';
 import { BasicMaterial } from './material/BasicMaterial';
-import { Axis } from './core/Axis3D';
+import { Axis } from './core/Axis2D';
 import { vec3 } from 'gl-matrix';
 
 const colors = {
@@ -36,22 +35,19 @@ class Breakout {
     create(): Promise<void | Breakout> {
         const renderer = this.renderer;
         return renderer.createProgram('material', [
-            [ GL_VERTEX_SHADER, materialVsSrc ],
-            [ GL_FRAGMENT_SHADER, materialFsSrc ],
+            [ GL_VERTEX_SHADER, basicVertSrc ],
+            [ GL_FRAGMENT_SHADER, basicFragSrc ],
         ]).then((result) => {
             const [tag, _] = result;
-            this.scene = new Scene(new PerspectiveCamera());
-            this.scene.camera.fov = 55;
+            this.scene = new Scene();
 
             //this.generateBricks();
-            const width = renderer.gl.canvas.clientWidth;
-            const height = renderer.gl.canvas.clientHeight;
             
-            console.log(width, height);
             const brick = new Brick(new BasicMaterial([1.0, 0.0, 1.0]));
-            brick.position.reset([-9.0, 0.0, -0.0]);
-            //brick.scale.reset(1.0 * (height / width), Axis.X);
-            brick.scale.reset([1.0 / 14.0, 1.0 / 14.0, 1.0]);
+            brick.worldSpace.position.reset([40.0, 40.0]);
+            brick.worldSpace.scale.reset([20, 20]);
+            brick.localSpace.scale.reset([1.0, 1.0]);
+            brick.localSpace.position.reset([0.5, 0.5]);
             this.bricks.push(brick);
 
             this.scene.addModel(tag, this.bricks);
@@ -71,8 +67,8 @@ class Breakout {
         const middle = Math.floor(columns / 2);
         const xOffset = ((middle * spacing) + middle) * -1;
         const brickTemplate = new Brick(new BasicMaterial([1.0, 1.0, 1.0]));
-        brickTemplate.position.reset([xOffset, 0.0, -7.0]);
-        brickTemplate.scale.reset([1.0, scaleY, 1.0]);
+        brickTemplate.worldSpace.position.reset([xOffset, 0.0]);
+        brickTemplate.worldSpace.scale.reset([1.0, scaleY]);
 
         for (let row = 0; row < rows; row++) { 
             const material = new BasicMaterial(rowColors[Math.floor(row / 2)]);
@@ -80,8 +76,8 @@ class Breakout {
             for (let column = 0; column < columns; column++) {
                 const padX = spacing * column;
                 const brick = brickTemplate.clone();
-                brick.position.adjust(column + padX, Axis.X);
-                brick.position.adjust(row + padY, Axis.Y);
+                brick.worldSpace.position.adjust(column + padX, Axis.X);
+                brick.worldSpace.position.adjust(row + padY, Axis.Y);
                 brick.material = material;
                 this.bricks.push(brick);
             }
@@ -97,7 +93,7 @@ class Breakout {
             then = now;
     
             this.renderer.render(this.scene, deltaTime);
-            requestAnimationFrame(render);
+            //requestAnimationFrame(render);
         }
     
         requestAnimationFrame(render);

@@ -1,4 +1,5 @@
-import { Program, ProgramBuilder, ShaderResource } from "./Program";
+import { mat4, vec2 } from "gl-matrix";
+import { Program, ProgramBuilder, ProgramInput, ShaderResource } from "./Program";
 import { Scene } from "./Scene";
 
 /**
@@ -22,6 +23,9 @@ class Renderer {
             this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
         }
 
+        let projection = mat4.create();
+        mat4.ortho(projection, 0, this.gl.canvas.width, 0, this.gl.canvas.height, 0.0, 1.0);
+
         this.gl.clearColor(0, 0, 0, 1);
         this.gl.clearDepth(1.0);
         this.gl.enable(this.gl.DEPTH_TEST);
@@ -29,8 +33,7 @@ class Renderer {
         
         for (const [ tag, program ] of this.programs) {
             program.use(this.gl);
-            scene.camera.aspect = this.gl.canvas.width / this.gl.canvas.height;
-            scene.camera.draw(this.gl, program);
+            program.updateProperty(this.gl, ProgramInput.PROJECTION, projection);
             for (const model of scene.getModels(tag)) {
                 model.draw(this.gl, program);
             }
@@ -62,7 +65,7 @@ class Renderer {
      * @param name Identifies the program used to draw the model
      */
     getProgram(name: string): Program | null {
-        const [ _, program ] = this.programs.find(([tag, program]) => tag === name);
+        const [ _, program ] = this.programs.find(([tag, _]) => tag === name);
         if (!program) {
             return null;
         }

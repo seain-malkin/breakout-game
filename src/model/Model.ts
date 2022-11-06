@@ -1,18 +1,24 @@
-import { WorldObject } from "../core/WorldObject";
-import { Program } from "../core/Program";
+import { WorldModel } from "./WorldModel";
+import { Program, ProgramInput } from "../core/Program";
 import { GeometryBuffer } from "../buffer/GeometryBuffer";
 import { Material } from "../material/Material";
 import { BufferComposable, BufferDrawable } from "../buffer/buffer";
+import { mat4 } from "gl-matrix";
+import { Vector2D } from "../core/Axis2D";
+import { SpaceMatrix } from "./SpaceMatrix";
 
 abstract class Model 
-extends WorldObject
+extends WorldModel
 implements BufferComposable, BufferDrawable {
+    localSpace = new SpaceMatrix();
+
     constructor(public geometry: GeometryBuffer, public material: Material) {
         super();
     }
 
     draw(gl: WebGL2RenderingContext, program: Program) {
-        program.updateProperty(gl, 'modelView', this.modelView);
+        super.draw(gl, program);
+        program.updateProperty(gl, ProgramInput.MODEL, this.localSpace.matrix);
         this.material.draw(gl, program);
         this.geometry.draw(gl);
     }

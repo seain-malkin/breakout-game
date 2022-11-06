@@ -10,7 +10,7 @@ class Plane extends GeometryBuffer {
     private constructor() {
         super();
         const vertexBuffer = new Float32VertexBuffer(vertices);
-        vertexBuffer.attachAttribute(ProgramInput.POSITION, new BufferAttribute(3));
+        vertexBuffer.attachAttribute(ProgramInput.POSITION, new BufferAttribute(2));
         this.vertexBuffers.push(vertexBuffer);
         this.indexBuffer = new Unit16IndexBuffer(indices);
     }
@@ -25,13 +25,13 @@ class Plane extends GeometryBuffer {
 
 const vertices = [
     // Bottom Left
-    -1.0, -1.0, 0.0,
+    -1.0, -1.0,
     // Top Left
-    -1.0,  1.0, 0.0,
+    -1.0,  1.0,
     // Top Right
-     1.0,  1.0, 0.0,
+     1.0,  1.0,
     // Bottom Right
-     1.0, -1.0, 0.0,
+     1.0, -1.0,
 ];
 
 const indices = [

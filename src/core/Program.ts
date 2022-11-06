@@ -1,4 +1,4 @@
-import { mat4, vec3 } from 'gl-matrix';
+import { mat4, vec2, vec3 } from 'gl-matrix';
 
 type ShaderResource = [ GLenum, string ];
 
@@ -11,10 +11,12 @@ interface ProgramProperty<T extends number | WebGLUniformLocation> {
 }
 
 enum ProgramInput {
-    POSITION = 'position',
-    MODEL_VIEW = 'modelView',
-    PROJECTION = 'projection',
-    COLOR = 'color',
+    POSITION = 'a_position',
+    RESOLUTION = 'u_resolution',
+    VIEW = 'u_view',
+    MODEL = 'u_model',
+    PROJECTION = 'u_projection',
+    COLOR = 'u_color',
 }
 
 class Program {
@@ -50,7 +52,7 @@ class Program {
     updateProperty(
         gl: WebGL2RenderingContext,
         name: string, 
-        value: mat4 | vec3
+        value: mat4 | vec3 | vec2
     ) {
         for (const property of this.uniforms) {
             if (property.name === name) {
@@ -63,7 +65,7 @@ class Program {
     private injectPropertyValue(
         gl: WebGL2RenderingContext,
         property: ProgramProperty<WebGLUniformLocation>, 
-        value: mat4 | vec3,
+        value: mat4 | vec3 | vec2,
     ) {
         switch (property.type) {
             case gl.FLOAT_MAT4:
@@ -71,6 +73,9 @@ class Program {
                 break;
             case gl.FLOAT_VEC3:
                 gl.uniform3fv(property.location, value);
+                break;
+            case gl.FLOAT_VEC2:
+                gl.uniform2fv(property.location, value);
                 break;
             default:
                 throw new Error(`Property '${property.name}' with type '${property.type}' is not supported.`);

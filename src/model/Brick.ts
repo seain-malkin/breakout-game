@@ -1,4 +1,3 @@
-import { Axis } from "../core/Axis3D";
 import { Plane } from "../geometry/Plane";
 import { Material } from "../material/Material";
 import { Model } from "./Model";
@@ -12,7 +11,6 @@ class Brick extends Model {
 
     constructor(material: Material) {
         super(Plane.getInstance(), material);
-        this.scale.reset([1.0, 1.0, 1.0]);
     }
 
     clone(): Brick {
