@@ -49,9 +49,9 @@ class Breakout {
             
             console.log(width, height);
             const brick = new Brick(new BasicMaterial([1.0, 0.0, 1.0]));
-            brick.position.reset([-0.0, 0.0, -0.0]);
-            brick.scale.reset(1.0 * (height / width), Axis.X);
-
+            brick.position.reset([-9.0, 0.0, -0.0]);
+            //brick.scale.reset(1.0 * (height / width), Axis.X);
+            brick.scale.reset([1.0 / 14.0, 1.0 / 14.0, 1.0]);
             this.bricks.push(brick);
 
             this.scene.addModel(tag, this.bricks);

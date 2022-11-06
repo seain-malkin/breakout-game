@@ -63,6 +63,10 @@ class Scene {
         }
     }
 
+    scale(width: number, height: number) {
+        
+    }
+
     private findProgramModelArrayIndex(tag: string): number {
         return this.models.findIndex(([ key, _ ]) => key === tag);
     }
