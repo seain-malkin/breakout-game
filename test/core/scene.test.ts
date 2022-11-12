@@ -2,14 +2,13 @@ import { Scene } from '../../src/core/Scene';
 import { Model } from '../../src/model/Model';
 import { Brick } from '../../src/model/Brick';
 import { BasicMaterial } from '../../src/material/BasicMaterial';
-import { PerspectiveCamera } from '../../src/camera/PerspectiveCamera';
 
 let scene: Scene;
 let model: Model;
 let material: BasicMaterial;
 
 beforeEach(() => {
-    scene = new Scene(new PerspectiveCamera());
+    scene = new Scene();
     material = new BasicMaterial([0.5, 0.5, 0.5]);
     model = new Brick(material);
 });

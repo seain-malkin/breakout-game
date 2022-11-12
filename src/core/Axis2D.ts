@@ -8,11 +8,12 @@ enum Axis {
 interface IVector2D {
     vector: vec2;
     
-    adjust(delta: number, axis: Axis): Promise<vec2>;
+    shift(delta: number, axis: Axis): Promise<vec2>;
 
+    reset(): Promise<vec2>;
     reset(value: vec2): Promise<vec2>;
     reset(value: number, axis: Axis): Promise<vec2>;
-    reset(value: vec2 | number, axis?: Axis): Promise<vec2>;
+    reset(value?: vec2 | number, axis?: Axis): Promise<vec2>;
 }
 
 class Vector2D implements IVector2D {
@@ -37,14 +38,16 @@ class Vector2D implements IVector2D {
         this._changed = value;
     }
 
-    adjust(delta: number, axis: Axis): Promise<vec2> {
+    shift(delta: number, axis: Axis): Promise<vec2> {
         this._vector[axis] += delta;
         this._changed = true;
         return Promise.resolve(this._vector);
     }
 
-    reset(value: vec2 | number, axis?: Axis): Promise<vec2> {
-        if (typeof value === "number") {
+    reset(value?: vec2 | number, axis?: Axis): Promise<vec2> {
+        if (typeof value === "undefined") {
+            this._vector = vec2.create();
+        } else if (typeof value === "number") {
             this._vector[axis] = value;
         } else {
             this._vector = value;

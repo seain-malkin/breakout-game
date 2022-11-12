@@ -76,8 +76,8 @@ class Breakout {
             for (let column = 0; column < columns; column++) {
                 const padX = spacing * column;
                 const brick = brickTemplate.clone();
-                brick.worldSpace.position.adjust(column + padX, Axis.X);
-                brick.worldSpace.position.adjust(row + padY, Axis.Y);
+                brick.worldSpace.position.shift(column + padX, Axis.X);
+                brick.worldSpace.position.shift(row + padY, Axis.Y);
                 brick.material = material;
                 this.bricks.push(brick);
             }
