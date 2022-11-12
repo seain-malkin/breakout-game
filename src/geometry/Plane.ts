@@ -25,13 +25,13 @@ class Plane extends GeometryBuffer {
 
 const vertices = [
     // Bottom Left
-    -1.0, -1.0,
+    -0.5, -0.5,
     // Top Left
-    -1.0,  1.0,
+    -0.5,  0.5,
     // Top Right
-     1.0,  1.0,
+     0.5,  0.5,
     // Bottom Right
-     1.0, -1.0,
+     0.5, -0.5,
 ];
 
 const indices = [

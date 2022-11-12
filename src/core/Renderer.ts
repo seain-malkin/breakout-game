@@ -8,23 +8,31 @@ import { Scene } from "./Scene";
  */
 class Renderer {
     readonly gl: WebGL2RenderingContext;
-    readonly canvasElement: HTMLCanvasElement;
 
     private programs = new Array<[string, Program]>();
 
+    private projection: mat4;
+
     constructor(canvasId: string) {
-        this.canvasElement = this.getCanvasElement(canvasId);
-        this.gl = this.getCanvasgl(this.canvasElement);
+        const canvasElement = this.getCanvasElement(canvasId);
+        this.gl = this.getCanvasgl(canvasElement);
+        this.updateProjection();
+    }
+
+    get width(): number {
+        return this.gl.canvas.width;
+    }
+
+    get height(): number {
+        return this.gl.canvas.height;
     }
 
     render(scene: Scene, deltaTime: number) {
         const resized = this.resizeCanvasToMatchDisplay();
         if (resized) {
+            this.updateProjection();
             this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
         }
-
-        let projection = mat4.create();
-        mat4.ortho(projection, 0, this.gl.canvas.width, 0, this.gl.canvas.height, 0.0, 1.0);
 
         this.gl.clearColor(0, 0, 0, 1);
         this.gl.clearDepth(1.0);
@@ -33,7 +41,7 @@ class Renderer {
         
         for (const [ tag, program ] of this.programs) {
             program.use(this.gl);
-            program.updateProperty(this.gl, ProgramInput.PROJECTION, projection);
+            program.updateProperty(this.gl, ProgramInput.PROJECTION, this.projection);
             for (const model of scene.getModels(tag)) {
                 model.draw(this.gl, program);
             }
@@ -83,6 +91,15 @@ class Renderer {
                 model.compose(this.gl, program);
             }
         }
+    }
+
+    private updateProjection() {
+        const projection = mat4.create();
+        // We want the 90,0) coordinate to be centered in the viewport
+        const halfWidth = this.gl.canvas.width / 2;
+        const halfHeight = this.gl.canvas.height / 2;
+        mat4.ortho(projection, halfWidth * -1, halfWidth, halfHeight * -1, halfHeight, 0.0, 1.0);
+        this.projection = projection;
     }
 
     /**

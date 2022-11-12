@@ -33,8 +33,9 @@ class SpaceMatrix {
 
     private updateMatrix() {
         let m = mat4.create();
+        
         mat4.translate(m, m, vec2ToVec3(this.position));
-        mat4.scale(m, m, vec2ToVec3(this.scale))
+        mat4.scale(m, m, vec2ToVec3(this.scale));
         this._matrix = m;
     }
 }

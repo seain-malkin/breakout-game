@@ -13,9 +13,9 @@ interface ProgramProperty<T extends number | WebGLUniformLocation> {
 enum ProgramInput {
     POSITION = 'a_position',
     RESOLUTION = 'u_resolution',
-    VIEW = 'u_view',
-    MODEL = 'u_model',
-    PROJECTION = 'u_projection',
+    VIEW = 'u_model',
+    MODEL = 'u_local',
+    PROJECTION = 'u_view',
     COLOR = 'u_color',
 }
 

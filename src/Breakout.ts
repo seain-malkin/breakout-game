@@ -43,11 +43,8 @@ class Breakout {
 
             //this.generateBricks();
             
-            const brick = new Brick(new BasicMaterial([1.0, 0.0, 1.0]));
-            brick.worldSpace.position.reset([40.0, 40.0]);
-            brick.worldSpace.scale.reset([20, 20]);
-            brick.localSpace.scale.reset([1.0, 1.0]);
-            brick.localSpace.position.reset([0.5, 0.5]);
+            const brick = new Brick(new BasicMaterial([0.254, 0.6397, 0.8349]));
+            brick.localSpace.scale.reset([641.25, 855.0]);
             this.bricks.push(brick);
 
             this.scene.addModel(tag, this.bricks);
@@ -93,7 +90,7 @@ class Breakout {
             then = now;
     
             this.renderer.render(this.scene, deltaTime);
-            //requestAnimationFrame(render);
+            requestAnimationFrame(render);
         }
     
         requestAnimationFrame(render);
