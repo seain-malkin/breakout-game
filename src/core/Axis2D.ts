@@ -5,7 +5,7 @@ enum Axis {
     'Y' = 1,
 }
 
-interface IAxisVector2D {
+interface IVector2D {
     vector: vec2;
     
     adjust(delta: number, axis: Axis): Promise<vec2>;
@@ -15,7 +15,7 @@ interface IAxisVector2D {
     reset(value: vec2 | number, axis?: Axis): Promise<vec2>;
 }
 
-class Vector2D implements IAxisVector2D {
+class Vector2D implements IVector2D {
     protected _vector: vec2;
     private _changed = false;
 
