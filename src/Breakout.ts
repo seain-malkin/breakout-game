@@ -8,6 +8,7 @@ import { Scene } from './core/Scene';
 import { BasicMaterial } from './material/BasicMaterial';
 import { Axis } from './core/Axis2D';
 import { vec3 } from 'gl-matrix';
+import { Material } from './material/Material';
 
 const colors = {
     yellow: vec3.fromValues(1.0, 1.0, 0.0),
@@ -40,16 +41,11 @@ class Breakout {
         ]).then((result) => {
             const [tag, _] = result;
             this.scene = new Scene();
-
-            //this.generateBricks();
-            
-            const brick = new Brick(new BasicMaterial([0.254, 0.6397, 0.8349]));
-            brick.localSpace.position.reset([0.5, 0.5]);
-            brick.localSpace.scale.reset([42.00, 12.6]);
-            const brick2 = brick.clone();
-            brick2.worldSpace.position.shift(13.45, Axis.Y);
-            this.bricks.push(brick);
-            this.bricks.push(brick2);
+            this.layBrickRow(0, new BasicMaterial([0.2, 0.7, 0.4]));
+            this.layBrickRow(1, new BasicMaterial([0.7, 0.2, 0.4]));
+            this.layBrickRow(2, new BasicMaterial([0.4, 0.2, 0.7]));
+            this.layBrickRow(3, new BasicMaterial([0.6, 0.8, 0.2]));
+            this.layBrickRow(4, new BasicMaterial([0.2, 0.8, 0.6]));
 
             this.scene.addModel(tag, this.bricks);
             renderer.compose(this.scene);
@@ -60,28 +56,21 @@ class Breakout {
         });
     }
 
-    private generateBricks() {
-        const columns = 9;
-        const rows = 8;
-        const spacing = 0.03;
-        const scaleY = 0.25;
-        const middle = Math.floor(columns / 2);
-        const xOffset = ((middle * spacing) + middle) * -1;
-        const brickTemplate = new Brick(new BasicMaterial([1.0, 1.0, 1.0]));
-        brickTemplate.worldSpace.position.reset([xOffset, 0.0]);
-        brickTemplate.worldSpace.scale.reset([1.0, scaleY]);
+    private layBrickRow(row: number, material: Material) {
+        const columns = 14;
+        const padding = 2;
+        const heightRatio = 1.5 / 3.0;
+        const width = this.scene.width / columns - padding * 2;
+        const height = width * heightRatio - padding * 2;
+        const baseBrick = new Brick(material);
+        baseBrick.localSpace.position.reset([0.5, 0.5]);
+        baseBrick.localSpace.scale.reset([width, height]);
 
-        for (let row = 0; row < rows; row++) { 
-            const material = new BasicMaterial(rowColors[Math.floor(row / 2)]);
-            const padY = spacing * row * (1 / scaleY);
-            for (let column = 0; column < columns; column++) {
-                const padX = spacing * column;
-                const brick = brickTemplate.clone();
-                brick.worldSpace.position.shift(column + padX, Axis.X);
-                brick.worldSpace.position.shift(row + padY, Axis.Y);
-                brick.material = material;
-                this.bricks.push(brick);
-            }
+        for (let c = 0; c < columns; c++) {
+            const brick = baseBrick.clone();
+            brick.worldSpace.position.reset(padding * c + width * c + padding, Axis.X);
+            brick.worldSpace.position.reset(this.scene.height - height * (row + 1) - padding * row - padding, Axis.Y);
+            this.bricks.push(brick);
         }
     }
 

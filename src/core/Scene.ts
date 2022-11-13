@@ -9,8 +9,8 @@ import { vec2ToVec3 } from "./Util";
 class Scene implements BufferDrawable {
     readonly models = new Array<[string, Array<Model>]>();
 
-    width = 300;
-    height = 400;
+    width = 400;
+    height = 500;
 
     private projection: mat4;
     sceneSpace = new SpaceMatrix();
