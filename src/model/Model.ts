@@ -35,6 +35,7 @@ implements BufferComposable, BufferDrawable {
         super.copy(from);
         this.geometry = from.geometry;
         this.material = from.material.clone();
+        this.localSpace = from.localSpace.clone();
     }
 }
 

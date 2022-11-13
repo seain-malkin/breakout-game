@@ -1,4 +1,4 @@
-import { mat4, vec2 } from "gl-matrix";
+import { mat4 } from "gl-matrix";
 import { Program, ProgramBuilder, ProgramInput, ShaderResource } from "./Program";
 import { Scene } from "./Scene";
 
@@ -95,10 +95,7 @@ class Renderer {
 
     private updateProjection() {
         const projection = mat4.create();
-        // We want the 90,0) coordinate to be centered in the viewport
-        const halfWidth = this.gl.canvas.width / 2;
-        const halfHeight = this.gl.canvas.height / 2;
-        mat4.ortho(projection, halfWidth * -1, halfWidth, halfHeight * -1, halfHeight, 0.0, 1.0);
+        mat4.ortho(projection, 0, this.gl.canvas.width, 0, this.gl.canvas.height, 0.0, 1.0);
         this.projection = projection;
     }
 
