@@ -1,5 +1,4 @@
-import { mat4 } from "gl-matrix";
-import { Program, ProgramBuilder, ProgramInput, ShaderResource } from "./Program";
+import { Program, ProgramBuilder, ShaderResource } from "./Program";
 import { Scene } from "./Scene";
 
 /**
@@ -11,12 +10,9 @@ class Renderer {
 
     private programs = new Array<[string, Program]>();
 
-    private projection: mat4;
-
     constructor(canvasId: string) {
         const canvasElement = this.getCanvasElement(canvasId);
         this.gl = this.getCanvasgl(canvasElement);
-        this.updateProjection();
     }
 
     get width(): number {
@@ -30,7 +26,7 @@ class Renderer {
     render(scene: Scene, deltaTime: number) {
         const resized = this.resizeCanvasToMatchDisplay();
         if (resized) {
-            this.updateProjection();
+            scene.onCanvasResize({ width: this.gl.canvas.width, height: this.gl.canvas.height });
             this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
         }
 
@@ -39,12 +35,9 @@ class Renderer {
         this.gl.enable(this.gl.DEPTH_TEST);
         this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
         
-        for (const [ tag, program ] of this.programs) {
+        for (const [ _, program ] of this.programs) {
             program.use(this.gl);
-            program.updateProperty(this.gl, ProgramInput.PROJECTION, this.projection);
-            for (const model of scene.getModels(tag)) {
-                model.draw(this.gl, program);
-            }
+            scene.draw(this.gl, program);
         }
     }
 
@@ -55,7 +48,7 @@ class Renderer {
      * @returns A tuple with the tag and created program wrapped in a promise
      */
     createProgram(tag: string, shaders: ShaderResource[]): Promise<[string, Program]> {
-        const builder = new ProgramBuilder();
+        const builder = new ProgramBuilder(tag);
         for (const shader of shaders) {
             builder.attachShader(shader);
         }
@@ -91,12 +84,6 @@ class Renderer {
                 model.compose(this.gl, program);
             }
         }
-    }
-
-    private updateProjection() {
-        const projection = mat4.create();
-        mat4.ortho(projection, 0, this.gl.canvas.width, 0, this.gl.canvas.height, 0.0, 1.0);
-        this.projection = projection;
     }
 
     /**

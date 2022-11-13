@@ -28,6 +28,7 @@ class Program {
     constructor(
         public gl: WebGL2RenderingContext,
         public glid: WebGLProgram,
+        public name: string,
         attribs?: ProgramProperty<number>[],
         uniforms?: ProgramProperty<WebGLUniformLocation>[],
     ) {
@@ -86,6 +87,8 @@ class Program {
 class ProgramBuilder {
     private shaders = new Array<ShaderResource>();
 
+    constructor(public name: string) {}
+
     attachShader(source: ShaderResource): this {
         this.shaders.push(source);
         return this;
@@ -114,7 +117,7 @@ class ProgramBuilder {
             if (!gl.getProgramParameter(glid, gl.LINK_STATUS)) {
                 reject(gl.getProgramInfoLog(glid));
             } else {
-                resolve(new Program(gl, glid, getAttributes(glid), getUniforms(glid)));
+                resolve(new Program(gl, glid, this.name, getAttributes(glid), getUniforms(glid)));
             }
 
             /**

@@ -44,11 +44,10 @@ class Breakout {
             //this.generateBricks();
             
             const brick = new Brick(new BasicMaterial([0.254, 0.6397, 0.8349]));
-            brick.worldSpace.scale.reset([0.5, 0.5]);
             brick.localSpace.position.reset([0.5, 0.5]);
-            brick.localSpace.scale.reset([200.00, 200.0]);
+            brick.localSpace.scale.reset([42.00, 12.6]);
             const brick2 = brick.clone();
-            brick2.worldSpace.position.shift(440.0, Axis.Y);
+            brick2.worldSpace.position.shift(13.45, Axis.Y);
             this.bricks.push(brick);
             this.bricks.push(brick2);
 

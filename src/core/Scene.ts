@@ -1,7 +1,34 @@
+import { mat4 } from "gl-matrix";
+import { BufferDrawable } from "../buffer/buffer";
 import { Model } from "../model/Model";
+import { SpaceMatrix } from "../model/SpaceMatrix";
+import { Axis } from "./Axis2D";
+import { Program, ProgramInput } from "./Program";
+import { vec2ToVec3 } from "./Util";
 
-class Scene {
+class Scene implements BufferDrawable {
     readonly models = new Array<[string, Array<Model>]>();
+
+    width = 300;
+    height = 400;
+
+    private projection: mat4;
+    sceneSpace = new SpaceMatrix();
+
+    onCanvasResize(canvas: {width: number, height: number}) {
+        const scale = canvas.height / this.height;
+        const origin = canvas.width / 2 / scale - this.width / 2;
+        this.sceneSpace.scale.reset([scale, scale]);
+        this.sceneSpace.position.reset(origin, Axis.X);
+        this.updateProjection(canvas.width, canvas.height);
+    }
+
+    draw(gl: WebGL2RenderingContext, program: Program): void {
+        program.updateProperty(gl, ProgramInput.PROJECTION, this.projection);
+        for (const models of this.getModels(program.name)) {
+            models.draw(gl, program);
+        }
+    }
 
     /**
      * Retrieve a list of models associated with a program.
@@ -56,6 +83,13 @@ class Scene {
                 }
             }
         }
+    }
+
+    private updateProjection(width: number, height: number) {
+        const projection = mat4.create();
+        this.projection = mat4.create();
+        mat4.ortho(projection, 0, width, 0, height, 0.0, 1.0);
+        mat4.multiply(this.projection, projection, this.sceneSpace.matrix);
     }
 
     private findProgramModelArrayIndex(tag: string): number {

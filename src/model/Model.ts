@@ -3,8 +3,6 @@ import { Program, ProgramInput } from "../core/Program";
 import { GeometryBuffer } from "../buffer/GeometryBuffer";
 import { Material } from "../material/Material";
 import { BufferComposable, BufferDrawable } from "../buffer/buffer";
-import { mat4 } from "gl-matrix";
-import { Vector2D } from "../core/Axis2D";
 import { SpaceMatrix } from "./SpaceMatrix";
 
 abstract class Model 
