@@ -7,7 +7,6 @@ import { Model } from "./Model";
  * hit by the ball.
  */
 class Brick extends Model {
-    margin = 0.1;
 
     constructor(material: Material) {
         super(Plane.getInstance(), material);

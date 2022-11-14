@@ -4,12 +4,11 @@ import { Model } from "../model/Model";
 import { SpaceMatrix } from "../model/SpaceMatrix";
 import { Axis } from "./Axis2D";
 import { Program, ProgramInput } from "./Program";
-import { vec2ToVec3 } from "./Util";
 
 class Scene implements BufferDrawable {
     readonly models = new Array<[string, Array<Model>]>();
 
-    width = 400;
+    width = 375;
     height = 500;
 
     private projection: mat4;

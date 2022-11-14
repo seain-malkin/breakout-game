@@ -17,7 +17,7 @@ const colors = {
     red: vec3.fromValues(1.0, 0.0, 0.0),
 };
 
-const rowColors: vec3[] = [colors.yellow, colors.green, colors.orange, colors.red];
+const rowColors: vec3[] = [ colors.red, colors.orange, colors.green, colors.yellow ];
 
 /**
  * A simple Breakout clone based on the original rules described 
@@ -41,13 +41,10 @@ class Breakout {
         ]).then((result) => {
             const [tag, _] = result;
             this.scene = new Scene();
-            this.layBrickRow(0, new BasicMaterial([0.2, 0.7, 0.4]));
-            this.layBrickRow(1, new BasicMaterial([0.7, 0.2, 0.4]));
-            this.layBrickRow(2, new BasicMaterial([0.4, 0.2, 0.7]));
-            this.layBrickRow(3, new BasicMaterial([0.6, 0.8, 0.2]));
-            this.layBrickRow(4, new BasicMaterial([0.2, 0.8, 0.6]));
-
+            this.bricks.push(...this.generateBricks());
+            this.bricks.push(this.generatePaddle());
             this.scene.addModel(tag, this.bricks);
+
             renderer.compose(this.scene);
             
             this.startRenderLoop();
@@ -56,10 +53,35 @@ class Breakout {
         });
     }
 
-    private layBrickRow(row: number, material: Material) {
+    private generatePaddle(): Brick {
+        const width = this.scene.width / 7;
+        const heightRatio = 1.0 / 5.0;
+        const height = width * heightRatio;
+        const brick = new Brick(new BasicMaterial([1.0, 1.0, 1.0]));
+        brick.localSpace.position.reset([0.5, 0.5]);
+        brick.localSpace.scale.reset([width, height]);
+        brick.worldSpace.position.reset((this.scene.width - width) / 2, Axis.X);
+        brick.worldSpace.position.reset(60, Axis.Y);
+        return brick;
+    }
+
+    private generateBricks(): Brick[] {
+        const bricks = new Array<Brick>();
+        const rows = 8;
+        let rowIndex = 0;
+        for (let row = 0; row < rows; row++) {
+            bricks.push(...this.layBrickRow(row, new BasicMaterial(rowColors[rowIndex])));
+            rowIndex += row % 2 ? 1 : 0;
+        }
+
+        return bricks;
+    }
+
+    private layBrickRow(row: number, material: Material): Brick[] {
+        const bricks = new Array<Brick>();
         const columns = 14;
-        const padding = 2;
-        const heightRatio = 1.5 / 3.0;
+        const padding = 1;
+        const heightRatio = 1.25 / 3.0;
         const width = this.scene.width / columns - padding * 2;
         const height = width * heightRatio - padding * 2;
         const baseBrick = new Brick(material);
@@ -70,8 +92,10 @@ class Breakout {
             const brick = baseBrick.clone();
             brick.worldSpace.position.reset(padding * c + width * c + padding, Axis.X);
             brick.worldSpace.position.reset(this.scene.height - height * (row + 1) - padding * row - padding, Axis.Y);
-            this.bricks.push(brick);
+            bricks.push(brick);
         }
+
+        return bricks;
     }
 
     private startRenderLoop() {
