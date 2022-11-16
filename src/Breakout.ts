@@ -9,6 +9,7 @@ import { BasicMaterial } from './material/BasicMaterial';
 import { Axis } from './core/Axis2D';
 import { vec3 } from 'gl-matrix';
 import { Material } from './material/Material';
+import { Model } from './model/Model';
 
 const colors = {
     yellow: vec3.fromValues(1.0, 1.0, 0.0),
@@ -27,7 +28,7 @@ const rowColors: vec3[] = [ colors.red, colors.orange, colors.green, colors.yell
 class Breakout {
     private renderer: Renderer;
     private scene: Scene;
-    private bricks = new Array<Brick>();
+    private models = new Array<Model>();
 
     constructor(canvasId: string) {
         this.renderer = new Renderer(canvasId);
@@ -35,15 +36,16 @@ class Breakout {
 
     create(): Promise<void | Breakout> {
         const renderer = this.renderer;
+
         return renderer.createProgram('material', [
             [ GL_VERTEX_SHADER, basicVertSrc ],
             [ GL_FRAGMENT_SHADER, basicFragSrc ],
         ]).then((result) => {
             const [tag, _] = result;
+
             this.scene = new Scene();
-            this.bricks.push(...this.generateBricks());
-            this.bricks.push(this.generatePaddle());
-            this.scene.addModel(tag, this.bricks);
+            this.models.push(this.generatePaddle(), ...this.generateBricks());
+            this.scene.addModel(tag, this.models);
 
             renderer.compose(this.scene);
             
@@ -58,10 +60,12 @@ class Breakout {
         const heightRatio = 1.0 / 5.0;
         const height = width * heightRatio;
         const brick = new Brick(new BasicMaterial([1.0, 1.0, 1.0]));
+
         brick.localSpace.position.reset([0.5, 0.5]);
         brick.localSpace.scale.reset([width, height]);
         brick.worldSpace.position.reset((this.scene.width - width) / 2, Axis.X);
         brick.worldSpace.position.reset(60, Axis.Y);
+
         return brick;
     }
 
@@ -69,6 +73,7 @@ class Breakout {
         const bricks = new Array<Brick>();
         const rows = 8;
         let rowIndex = 0;
+        
         for (let row = 0; row < rows; row++) {
             bricks.push(...this.layBrickRow(row, new BasicMaterial(rowColors[rowIndex])));
             rowIndex += row % 2 ? 1 : 0;
