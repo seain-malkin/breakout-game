@@ -1,14 +1,27 @@
 import { vec2 } from "gl-matrix";
 
 type newtons = number;
+type Force = {
+    vector: vec2;
+};
 
-interface Force {
-    vector: vec2
+class Physics {
+
+    static fixedDeltaTime = 0.016;
+
+    static simulate(movable: Movable, deltaTime: number) {
+        for (const force of movable.forces) {
+            const deltaForce = vec2.create();
+            vec2.scale(deltaForce, force.vector, deltaTime);
+            vec2.add(movable.velocity, movable.velocity, deltaForce);
+        }
+    }
+
 }
 
 class Movable {
     mass: newtons;
-    velocity: vec2;
+    velocity = vec2.create();
     forces = new Array<Force>();
 
     /**
@@ -29,11 +42,12 @@ class Movable {
      * @param force The force to remove from an object.
      */
     removeForce(force: Force) {
-        this.forces.filter((f) => f !== force);
+        this.forces = this.forces.filter((f) => f !== force);
     }
 }
 
 export {
+    Physics,
     Movable,
     Force,
 }
