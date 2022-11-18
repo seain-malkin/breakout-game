@@ -10,6 +10,7 @@ import { Axis } from './core/Axis2D';
 import { vec3 } from 'gl-matrix';
 import { Material } from './material/Material';
 import { Model } from './model/Model';
+import { Keyboard } from './core/Keyboard';
 
 const colors = {
     yellow: vec3.fromValues(1.0, 1.0, 0.0),
@@ -106,10 +107,16 @@ class Breakout {
     private startRenderLoop() {
         let then = 0;
 
+        const keyboard = new Keyboard(this.renderer.gl.canvas);
+        keyboard.enable();
+
         let render = (now: DOMHighResTimeStamp) => {
             now *= 0.001;
             const deltaTime = now - then;
             then = now;
+
+            const keyState = keyboard.getKeyState('j');
+            console.log(keyState);
     
             this.renderer.render(this.scene, deltaTime);
             requestAnimationFrame(render);
