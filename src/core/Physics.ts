@@ -1,28 +1,55 @@
 import { vec2 } from "gl-matrix";
 
-type newtons = number;
-type Force = {
+type kg = number;
+type seconds = number;
+interface Force {
     vector: vec2;
-};
+
+    apply(target: Movable, deltaTime: seconds): void;
+}
+
+class Acceleration implements Force {
+    vector: vec2;
+
+    constructor(force: vec2) {
+        this.vector = force;
+    }
+
+    apply(target: Movable, deltaTime: seconds) {
+        const deltaForce = vec2.create();
+        vec2.scale(deltaForce, this.vector, deltaTime / target.mass);
+        const velocity = vec2.create();
+        vec2.add(velocity, target.velocity, deltaForce);
+        target.velocity = velocity;
+    }
+}
 
 class Physics {
+
+    private constructor() {};
 
     static fixedDeltaTime = 0.016;
 
     static simulate(movable: Movable, deltaTime: number) {
-        for (const force of movable.forces) {
-            const deltaForce = vec2.create();
-            vec2.scale(deltaForce, force.vector, deltaTime);
-            vec2.add(movable.velocity, movable.velocity, deltaForce);
-        }
+        movable.step(deltaTime);
     }
 
 }
 
 class Movable {
-    mass: newtons;
+    mass: kg = 1.0;
     velocity = vec2.create();
     forces = new Array<Force>();
+
+    /**
+     * Applies all the forces proportionally based on time passed.
+     * @param deltaTime Time in seconds since last step.
+     */
+    step(deltaTime: seconds) {
+        for (const force of this.forces) {
+            force.apply(this, deltaTime);
+        }
+    }
 
     /**
      * Adds a force to an object that will change the 
@@ -50,4 +77,5 @@ export {
     Physics,
     Movable,
     Force,
+    Acceleration,
 }
