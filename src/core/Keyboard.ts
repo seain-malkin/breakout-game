@@ -30,9 +30,6 @@ class Keyboard {
         // Test the input state to the current state
         const match = (keyState & checkState) === checkState;
 
-        // Remove matching state once checked
-        this.keys.set(key, keyState ^ checkState);
-
         return match;
     }
 
@@ -46,8 +43,11 @@ class Keyboard {
             keyState ^= KeyState.Up;
 
             // Apply current key state
-            keyState |= KeyState.Down;
-            keyState |= (event.repeat ? KeyState.Repeat : 0);
+            if (!event.repeat) {
+                keyState |= KeyState.Down;
+            } else {
+                keyState |= KeyState.Repeat;
+            }
 
             this.keys.set(event.key, keyState);
         };
@@ -74,4 +74,4 @@ class Keyboard {
     }
 }
 
-export { Keyboard };
+export { Keyboard, KeyState, };
