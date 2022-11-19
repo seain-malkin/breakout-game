@@ -1,7 +1,15 @@
-type KeyState = {
-    pressed: boolean,
-    repeating: boolean,
+type keyState = {
+    down: boolean,
+    held: boolean,
+    up: boolean,
 };
+
+enum KeyState {
+    Idle =   0,
+    Down =   1 << 0,
+    Up =     1 << 1,
+    Repeat = 1 << 2,
+}
 
 /**
  * Represents the pressed state of individual keys from the
@@ -10,32 +18,45 @@ type KeyState = {
 class Keyboard {
     private target: HTMLElement;
     
-    private keys: Map<string, KeyState>;
+    private keys: Map<string, number>;
     
     constructor(element: HTMLElement) {
         this.target = element;
     }
 
-    getKeyState(key: string): KeyState {
-        return this.keys.has(key) ? this.keys.get(key) : {
-            pressed: false,
-            repeating: false,
-        };
+    hasState(key: string, checkState: number): boolean {
+        const keyState = this.requireKeyState(key);
+
+        // Test the input state to the current state
+        const match = (keyState & checkState) === checkState;
+
+        // Remove matching state once checked
+        this.keys.set(key, keyState ^ checkState);
+
+        return match;
     }
 
     enable() {
         this.keys = new Map();
 
         this.target.onkeydown = (event) => {
-            const key = this.requireKeyState(event.key);
-            key.pressed = true;
-            key.repeating = event.repeat;
+            let keyState = this.requireKeyState(event.key);
+
+            // Remove any Up state
+            keyState ^= KeyState.Up;
+
+            // Apply current key state
+            keyState |= KeyState.Down;
+            keyState |= (event.repeat ? KeyState.Repeat : 0);
+
+            this.keys.set(event.key, keyState);
         };
 
         this.target.onkeyup = (event) => {
-            const key = this.requireKeyState(event.key);
-            key.pressed = false;
-            key.repeating = false;
+            this.requireKeyState(event.key);
+
+            // Clear all states except the Up state
+            this.keys.set(event.key, KeyState.Up);
         };
     }
 
@@ -44,12 +65,9 @@ class Keyboard {
         this.target.onkeyup = null;
     }
 
-    private requireKeyState(key: string): KeyState {
+    private requireKeyState(key: string): number {
         if (!this.keys.has(key)) {
-            this.keys.set(key, {
-                pressed: false,
-                repeating: false,
-            });
+            this.keys.set(key, KeyState.Idle);
         }
 
         return this.keys.get(key);
