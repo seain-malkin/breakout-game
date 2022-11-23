@@ -17,6 +17,7 @@
     "@types/webgl2": "^0.0.6",
     "gl-matrix": "^3.4.3",
     "jest": "^29.2.2",
+    "jest-environment-jsdom": "^29.3.1",
     "ts-jest": "^29.0.3",
     "ts-loader": "^9.4.1",
     "ts-shader-loader": "^2.0.1",

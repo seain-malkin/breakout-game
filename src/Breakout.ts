@@ -10,7 +10,7 @@ import { Axis } from './core/Axis2D';
 import { vec3 } from 'gl-matrix';
 import { Material } from './material/Material';
 import { Model } from './model/Model';
-import { Keyboard } from './core/Keyboard';
+import keystate from './core/KeyState';
 
 const colors = {
     yellow: vec3.fromValues(1.0, 1.0, 0.0),
@@ -30,6 +30,7 @@ class Breakout {
     private renderer: Renderer;
     private scene: Scene;
     private models = new Array<Model>();
+    private paddle: Brick;
 
     constructor(canvasId: string) {
         this.renderer = new Renderer(canvasId);
@@ -45,7 +46,8 @@ class Breakout {
             const [tag, _] = result;
 
             this.scene = new Scene();
-            this.models.push(this.generatePaddle(), ...this.generateBricks());
+            this.paddle = this.generatePaddle();
+            this.models.push(this.paddle, ...this.generateBricks());
             this.scene.addModel(tag, this.models);
 
             renderer.compose(this.scene);
@@ -107,17 +109,17 @@ class Breakout {
     private startRenderLoop() {
         let then = 0;
 
-        const keyboard = new Keyboard(this.renderer.gl.canvas);
-        keyboard.enable();
+        keystate.enable(this.renderer.gl.canvas);
 
         let render = (now: DOMHighResTimeStamp) => {
             now *= 0.001;
             const deltaTime = now - then;
             then = now;
 
-            const keyState = keyboard.getKeyState('j');
-            console.log(keyState);
-    
+            if (keystate.keyDown('j')) {
+                this.paddle.worldSpace.position.shift(-2.0, Axis.X);
+            }
+
             this.renderer.render(this.scene, deltaTime);
             requestAnimationFrame(render);
         }
