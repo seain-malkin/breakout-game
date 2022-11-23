@@ -10,7 +10,7 @@ import { Axis } from './core/Axis2D';
 import { vec3 } from 'gl-matrix';
 import { Material } from './material/Material';
 import { Model } from './model/Model';
-import { Keyboard, KeyState } from './core/Keyboard';
+import keystate from './core/KeyState';
 
 const colors = {
     yellow: vec3.fromValues(1.0, 1.0, 0.0),
@@ -109,21 +109,17 @@ class Breakout {
     private startRenderLoop() {
         let then = 0;
 
-        const keyboard = new Keyboard(this.renderer.gl.canvas);
-        keyboard.enable();
+        keystate.enable(this.renderer.gl.canvas);
 
         let render = (now: DOMHighResTimeStamp) => {
             now *= 0.001;
             const deltaTime = now - then;
             then = now;
 
-            const keyDown = keyboard.hasState('j', KeyState.Down);
-            const keyRepeat = keyboard.hasState('j', KeyState.Repeat);
-            if (keyDown && !keyRepeat) {
+            if (keystate.keyDown('j')) {
                 this.paddle.worldSpace.position.shift(-2.0, Axis.X);
             }
 
-    
             this.renderer.render(this.scene, deltaTime);
             requestAnimationFrame(render);
         }
