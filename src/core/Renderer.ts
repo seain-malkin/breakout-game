@@ -34,6 +34,8 @@ class Renderer {
         this.gl.clearDepth(1.0);
         this.gl.enable(this.gl.DEPTH_TEST);
         this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
+
+        scene.simulate(deltaTime);
         
         for (const [ _, program ] of this.programs) {
             program.use(this.gl);

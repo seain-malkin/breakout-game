@@ -11,6 +11,7 @@ import { vec3 } from 'gl-matrix';
 import { Material } from './material/Material';
 import { Model } from './model/Model';
 import keystate from './core/KeyState';
+import { Acceleration, Movable } from './core/Physics';
 
 const colors = {
     yellow: vec3.fromValues(1.0, 1.0, 0.0),
@@ -30,7 +31,7 @@ class Breakout {
     private renderer: Renderer;
     private scene: Scene;
     private models = new Array<Model>();
-    private paddle: Brick;
+    private paddle: Movable;
 
     constructor(canvasId: string) {
         this.renderer = new Renderer(canvasId);
@@ -46,9 +47,11 @@ class Breakout {
             const [tag, _] = result;
 
             this.scene = new Scene();
-            this.paddle = this.generatePaddle();
-            this.models.push(this.paddle, ...this.generateBricks());
+            const paddleModel = this.generatePaddle();
+            this.paddle = new Movable(paddleModel);
+            this.models.push(paddleModel, ...this.generateBricks());
             this.scene.addModel(tag, this.models);
+            this.scene.movables.push(this.paddle);
 
             renderer.compose(this.scene);
             
@@ -111,13 +114,18 @@ class Breakout {
 
         keystate.enable(this.renderer.gl.canvas);
 
+        const paddleAccel = new Acceleration([-20.0, 0.0]);
+
         let render = (now: DOMHighResTimeStamp) => {
             now *= 0.001;
             const deltaTime = now - then;
             then = now;
 
             if (keystate.keyDown('j')) {
-                this.paddle.worldSpace.position.shift(-2.0, Axis.X);
+                this.paddle.addForce(paddleAccel);
+            }
+            if (keystate.keyUp('j')) {
+                this.paddle.removeForce(paddleAccel);
             }
 
             this.renderer.render(this.scene, deltaTime);

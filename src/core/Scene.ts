@@ -3,10 +3,12 @@ import { BufferDrawable } from "../buffer/buffer";
 import { Model } from "../model/Model";
 import { SpaceMatrix } from "../model/SpaceMatrix";
 import { Axis } from "./Axis2D";
+import { Movable, Physics } from "./Physics";
 import { Program, ProgramInput } from "./Program";
 
 class Scene implements BufferDrawable {
     readonly models = new Array<[string, Array<Model>]>();
+    readonly movables = new Array<Movable>();
 
     width = 375;
     height = 500;
@@ -20,6 +22,16 @@ class Scene implements BufferDrawable {
         this.sceneSpace.scale.reset([scale, scale]);
         this.sceneSpace.position.reset(origin, Axis.X);
         this.updateProjection(canvas.width, canvas.height);
+    }
+
+    simulate(deltaTime: number) {
+        for (const movable of this.movables) {
+            let deltaStep = deltaTime;
+            while (deltaStep >= Physics.fixedDeltaTime) {
+                Physics.simulate(movable, Physics.fixedDeltaTime);
+                deltaStep -= Physics.fixedDeltaTime;
+            }
+        }
     }
 
     draw(gl: WebGL2RenderingContext, program: Program): void {

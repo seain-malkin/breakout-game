@@ -1,4 +1,5 @@
 import { vec2 } from "gl-matrix";
+import { WorldModel } from "../model/WorldModel";
 
 type kg = number;
 type seconds = number;
@@ -40,6 +41,8 @@ class Movable {
     mass: kg = 1.0;
     velocity = vec2.create();
     forces = new Array<Force>();
+
+    constructor(public model: WorldModel) {}
 
     /**
      * Applies all the forces proportionally based on time passed.
