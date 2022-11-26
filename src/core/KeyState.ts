@@ -72,6 +72,8 @@ const enable = (element: HTMLElement) => {
         if ((state & KeyState.Active) !== KeyState.Active) {
             keys.set(ev.key, KeyState.Down | KeyState.Active);
         }
+
+        ev.preventDefault();
     };
 
     target.onkeyup = (ev: KeyboardEvent) => {
@@ -81,6 +83,8 @@ const enable = (element: HTMLElement) => {
         if ((state & KeyState.Active) === KeyState.Active) {
             keys.set(ev.key, KeyState.Up);
         }
+
+        ev.preventDefault();
     };
 };
 

@@ -24,13 +24,20 @@ class Scene implements BufferDrawable {
         this.updateProjection(canvas.width, canvas.height);
     }
 
+    // simulate(deltaTime: number) {
+    //     for (const movable of this.movables) {
+    //         let deltaStep = deltaTime;
+    //         console.log(deltaStep);
+    //         while (deltaStep >= Physics.fixedDeltaTime) {
+    //             Physics.simulate(movable, Physics.fixedDeltaTime);
+    //             deltaStep -= Physics.fixedDeltaTime;
+    //         }
+    //     }
+    // }
+
     simulate(deltaTime: number) {
         for (const movable of this.movables) {
-            let deltaStep = deltaTime;
-            while (deltaStep >= Physics.fixedDeltaTime) {
-                Physics.simulate(movable, Physics.fixedDeltaTime);
-                deltaStep -= Physics.fixedDeltaTime;
-            }
+            Physics.simulate(movable, deltaTime);
         }
     }
 
