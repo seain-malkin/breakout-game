@@ -114,7 +114,8 @@ class Breakout {
 
         keystate.enable(this.renderer.gl.canvas);
 
-        const paddleAccel = new Acceleration([-20.0, 0.0]);
+        const paddleLeft = new Acceleration([-10.0, 0.0]);
+        const paddleRight = new Acceleration([10.0, 0.0]);
 
         let render = (now: DOMHighResTimeStamp) => {
             now *= 0.001;
@@ -122,10 +123,16 @@ class Breakout {
             then = now;
 
             if (keystate.keyDown('j')) {
-                this.paddle.addForce(paddleAccel);
+                this.paddle.addForce(paddleLeft);
             }
             if (keystate.keyUp('j')) {
-                this.paddle.removeForce(paddleAccel);
+                this.paddle.removeForce(paddleLeft);
+            }
+            if (keystate.keyDown('l')) {
+                this.paddle.addForce(paddleRight);
+            }
+            if (keystate.keyUp('l')) {
+                this.paddle.removeForce(paddleRight);
             }
 
             this.renderer.render(this.scene, deltaTime);

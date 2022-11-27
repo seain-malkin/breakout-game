@@ -34,7 +34,6 @@ class Physics {
     static simulate(movable: Movable, deltaTime: number) {
         movable.step(deltaTime);
     }
-
 }
 
 class Movable {
@@ -52,6 +51,10 @@ class Movable {
         for (const force of this.forces) {
             force.apply(this, deltaTime);
         }
+        
+        const position = vec2.create();
+        vec2.add(position, this.velocity, this.model.worldSpace.position.vector);
+        this.model.worldSpace.position.reset(position);
     }
 
     /**
