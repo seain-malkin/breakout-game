@@ -1,23 +1,23 @@
 import { vec3 } from "gl-matrix";
 
-interface ForceComponent {
+interface Force {
     applyForce(velocity: vec3, dt: number): vec3;
 }
 
-class NetForce implements ForceComponent {
+class NetForce implements Force {
     applyForce(velocity: vec3, dt: number): vec3 {
         return velocity;
     }
 }
 
-abstract class AppliedForce implements ForceComponent {
+abstract class AppliedForce implements Force {
 
-    protected force: ForceComponent;
+    protected force: Force;
 
     /** Vector Quantity in 3D space */
     private quantity: vec3;
 
-    constructor(qty: vec3, force: ForceComponent) {
+    constructor(qty: vec3, force: Force) {
         this.quantity = qty;
         this.force = force;
     }
@@ -34,14 +34,14 @@ abstract class AppliedForce implements ForceComponent {
     }
 }
 
-class Acceleration extends AppliedForce {
+class Push extends AppliedForce {
 
     applyForce(velocity: vec3, dt: number): vec3 {
         return this.force.applyForce(this.addScaledQuantity(velocity, dt), dt);
     }
 }
 
-class Friction extends AppliedForce {
+class Resist extends AppliedForce {
 
     applyForce(velocity: vec3, dt: number): vec3 {
         const preFriction = this.force.applyForce(velocity, dt);
@@ -50,7 +50,7 @@ class Friction extends AppliedForce {
         return vec3.fromValues(
             this.findMaxFriction(preFriction[0], friction[0]),
             this.findMaxFriction(preFriction[1], friction[1]),
-            this.findMaxFriction(preFriction[2], friction[2])
+            this.findMaxFriction(preFriction[2], friction[2]),
         );
     }
 
@@ -60,7 +60,7 @@ class Friction extends AppliedForce {
     }
 }
 
-class Gravity extends AppliedForce {
+class Pull extends AppliedForce {
 
     applyForce(velocity: vec3, dt: number): vec3 {
         return this.force.applyForce(this.addScaledQuantity(velocity, dt), dt);
@@ -68,8 +68,9 @@ class Gravity extends AppliedForce {
 }
 
 export {
+    Force,
     NetForce,
-    Acceleration,
-    Friction,
-    Gravity,
+    Push,
+    Resist,
+    Pull,
 }
