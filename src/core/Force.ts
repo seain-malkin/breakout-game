@@ -1,24 +1,20 @@
 import { vec3 } from "gl-matrix";
 
-interface Force {
-    applyForce(velocity: vec3, dt: number): vec3;
+interface Net {
+    net(velocity: vec3): vec3;
 }
 
-class NetForce implements Force {
-    applyForce(velocity: vec3, dt: number): vec3 {
+class Static implements Net {
+    net(velocity: vec3): vec3 {
         return velocity;
     }
 }
 
-abstract class AppliedForce implements Force {
+abstract class Applied implements Net {
 
-    protected force: Force;
+    protected force: Net;
 
-    /** Vector Quantity in 3D space */
-    private quantity: vec3;
-
-    constructor(qty: vec3, force: Force) {
-        this.quantity = qty;
+    constructor(force: Net) {
         this.force = force;
     }
 
@@ -27,25 +23,50 @@ abstract class AppliedForce implements Force {
      * @param velocity The velocity to add the force vector quantity to.
      * @param dt The time in seconds since the last application of force.
      */
-    abstract applyForce(velocity: vec3, dt: number): vec3;
+    abstract net(velocity: vec3): vec3;
+}
 
-    protected addScaledQuantity(a: vec3, dt: number): vec3 {
-        return vec3.scaleAndAdd(vec3.create(), a, this.quantity, dt);
+abstract class VectorQuantity extends Applied {
+
+    /** Vector Quantity in 3D space */
+    private quantity: vec3;
+
+    constructor(qty: vec3, force: Net) {
+        super(force);
+        this.quantity = qty;
+    }
+
+    protected applyQuantity(a: vec3): vec3 {
+        return vec3.add(vec3.create(), a, this.quantity);
     }
 }
 
-class Push extends AppliedForce {
+abstract class ScalarQuantity extends Applied {
 
-    applyForce(velocity: vec3, dt: number): vec3 {
-        return this.force.applyForce(this.addScaledQuantity(velocity, dt), dt);
+    private quantity: number;
+
+    constructor(qty: number, force: Net) {
+        super(force);
+        this.quantity = qty;
+    }
+
+    protected applyQuantity(a: vec3): vec3 {
+        return vec3.scale(vec3.create(), a, this.quantity);
     }
 }
 
-class Resist extends AppliedForce {
+class Push extends VectorQuantity {
 
-    applyForce(velocity: vec3, dt: number): vec3 {
-        const preFriction = this.force.applyForce(velocity, dt);
-        const friction = this.addScaledQuantity(vec3.create(), dt);
+    net(velocity: vec3): vec3 {
+        return this.force.net(this.applyQuantity(velocity));
+    }
+}
+
+class Resist extends ScalarQuantity {
+
+    net(velocity: vec3): vec3 {
+        const preFriction = this.force.net(velocity);
+        const friction = this.applyQuantity(vec3.create());
 
         return vec3.fromValues(
             this.findMaxFriction(preFriction[0], friction[0]),
@@ -60,17 +81,9 @@ class Resist extends AppliedForce {
     }
 }
 
-class Pull extends AppliedForce {
-
-    applyForce(velocity: vec3, dt: number): vec3 {
-        return this.force.applyForce(this.addScaledQuantity(velocity, dt), dt);
-    }
-}
-
 export {
-    Force,
-    NetForce,
-    Push,
-    Resist,
-    Pull,
+    Static as StaticForce,
+    Net as NetForce,
+    Push as PushForce,
+    Resist as ResistForce,
 }
