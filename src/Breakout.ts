@@ -112,7 +112,7 @@ class Breakout {
     private startRenderLoop() {
         let then = 0;
 
-        keystate.enable(this.renderer.gl.canvas);
+        keystate.enable(<HTMLElement>this.renderer.gl.canvas);
 
         const paddleLeft = new Acceleration([-10.0, 0.0]);
         const paddleRight = new Acceleration([10.0, 0.0]);
